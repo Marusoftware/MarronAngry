@@ -8,17 +8,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-fastapi = {extras = ["full"], version = "^0.82.0"}
+fastapi = "^0.82.0"
 sqlmodel = {git = "https://github.com/maru0123-2004/sqlmodel.git"}
 python-multipart = "^0.0.5"
 SQLAlchemy-Utils = "^0.38.3"
 pydantic = {extras = ["email"], version = "^1.10.2"}
 passlib = "^1.7.4"
-loginpass = {git = "https://github.com/authlib/loginpass"}
 httpx = "^0.23.0"
 itsdangerous = "^2.1.2"
-authlib = {git = "https://github.com/lepture/authlib", rev = "maintain-0.15"}
-
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.18.3"
