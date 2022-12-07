@@ -1,3 +1,4 @@
+from typing import List
 from uuid import UUID, uuid4
 from sqlalchemy import Unicode
 from sqlmodel import SQLModel, Field, Relationship
@@ -17,12 +18,21 @@ class User(SQLModel, table=True):
 
 class Email(SQLModel, table=True):
     __tablename__="email"
+    user_id:UUID = Field(foreign_key="user.id", description="User ID")
     email:EmailStr = Field(sa_type=EmailType, primary_key=True, index=True, nullable=False, unique=True, description="User email")
     is_marusoftware:bool = Field(default=False, nullable=False, description="Is this email marusoftware's?")
-    user_id:UUID = Field(foreign_key="user.id", description="User ID")
     user:User = Relationship(back_populates="email")
 
 class Auth(SQLModel, table=True):
     __tablename__="auth"
     user_id:UUID = Field(primary_key=True, unique=True, default=None, description="User ID", foreign_key="user.id")
     password:SecretStr = Field(sa_type=PasswordType(max_length=1024, schemes=['pbkdf2_sha512','md5_crypt'], deprecated=['md5_crypt']), nullable=True, description="User password")
+    user:User = Relationship(back_populates="auth")
+    oauths:List["OAuth"] = Relationship(back_populates="auth")
+
+class OAuth(SQLModel, table=True):
+    __tablename__="oauth"
+    id:UUID = Field(sa_type=UUIDType(), default_factory=uuid4, primary_key=True, index=True, nullable=False, description="OAuth ID")
+    provider:str = Field(sa_type=Unicode(100), index=True, nullable=False, description="OAuth Provider")
+    auth:Auth = Relationship(back_populates="oauths")
+    user_id:UUID = Field(foreign_key="auth.user_id", default=None)
