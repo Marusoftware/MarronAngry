@@ -10,7 +10,10 @@ from fastapi.middleware.gzip import GZipMiddleware
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 from starlette.middleware.sessions import SessionMiddleware
-app.add_middleware(SessionMiddleware, secret_key="secret-string")
+import random, string
+def randomstr(n):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=n))
+app.add_middleware(SessionMiddleware, secret_key=randomstr(15))
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", scopes={})
 
