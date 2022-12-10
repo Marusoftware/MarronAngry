@@ -17,3 +17,5 @@ app.add_middleware(SessionMiddleware, secret_key=randomstr(15))
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", scopes={})
 
+from .routes.sso import router as sso
+app.add_route("/sso", sso)
