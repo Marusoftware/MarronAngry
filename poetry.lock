@@ -368,7 +368,7 @@ sqlalchemy2-stubs = "*"
 type = "git"
 url = "https://github.com/maru0123-2004/sqlmodel.git"
 reference = "HEAD"
-resolved_reference = "55098b25a3b6d723fa7cec3bf944285b0cfcf485"
+resolved_reference = "c4c58cc2be20c29fc4c8f9e1ed06fe133eadaf85"
 
 [[package]]
 name = "starlette"
