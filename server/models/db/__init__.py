@@ -38,6 +38,6 @@ class OAuth(SQLModel, table=True):
     token1:str = Field(max_length=200)
     token2:str = Field(max_length=200)
     is_oauth2:bool
-    expires_at:datetime
+    expires_at:datetime=Field(nullable=True)
     auth:Auth = Relationship(back_populates="oauths")
     user_id:UUID = Field(foreign_key="auth.user_id", default=None)
