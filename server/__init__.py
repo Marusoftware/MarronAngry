@@ -17,7 +17,7 @@ app.add_middleware(SessionMiddleware, secret_key=randomstr(15))
 
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(CORSMiddleware,
-    allow_origins=["https://marron.marusoftware.net", "http://localhost:3000"],
+    allow_origins=["https://marron.marusoftware.net", "http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
