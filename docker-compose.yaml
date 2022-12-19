@@ -6,8 +6,11 @@ services:
       - "8000:8000"
     volumes:
       - ./server:/usr/src/app/server
+      - ./migrations:/usr/src/app/migrations
     env_file:
       - .env
+    depends_on:
+      - db
   db:
     image: postgres:15.1-bullseye
     volumes:

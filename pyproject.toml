@@ -20,7 +20,17 @@ tortoise-orm = {extras = ["accel", "asyncpg"], version = "^0.19.2"}
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.18.3"
 watchfiles = "^0.18.1"
+pydantic = {extras = ["dotenv"], version = "^1.10.2"}
 
+
+[tool.poetry.group.migration.dependencies]
+aerich = "^0.7.1"
+
+
+[tool.aerich]
+tortoise_orm = "server.db.config"
+location = "./migrations"
+src_folder = "./."
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
