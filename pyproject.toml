@@ -19,6 +19,7 @@ tortoise-orm = {extras = ["accel", "asyncpg"], version = "^0.19.2"}
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.18.3"
+watchfiles = "^0.18.1"
 
 [build-system]
 requires = ["poetry-core"]
