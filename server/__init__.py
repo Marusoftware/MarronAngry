@@ -27,3 +27,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", scopes={})
 
 from .routes.sso import router as sso
 app.add_route("/sso", sso)
+
+from .db import init_db, final_db
+@app.on_event("startup")
+async def startup():
+    await init_db()
+
+@app.on_event("shutdown")
+async def shutdown():
+    await final_db()
