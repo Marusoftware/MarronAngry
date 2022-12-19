@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 
-app = FastAPI()
+app = FastAPI(root_path="/api/v1/")
 
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["marron.marusoftware.net", "localhost"])
@@ -25,8 +25,8 @@ app.add_middleware(CORSMiddleware,
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", scopes={})
 
-from .routes.sso import router as sso
-app.add_route("/sso", sso)
+from .routes import router
+app.include_router(router)
 
 from .db import init_db, final_db
 @app.on_event("startup")
