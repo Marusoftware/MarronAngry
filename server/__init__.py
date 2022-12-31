@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.security import OAuth2PasswordBearer
 
-app = FastAPI(root_path="/api/v1/")
+app = FastAPI(title="Marron API", description="API of Marron")
 
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["marron.marusoftware.net", "localhost"])
@@ -36,3 +36,7 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await final_db()
+
+@app.get("/app")
+def read_main(request: Request):
+    return {"message": "Hello World", "root_path": request.scope.get("root_path")}
