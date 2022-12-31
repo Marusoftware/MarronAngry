@@ -16,11 +16,13 @@ httpx = "^0.23.0"
 itsdangerous = "^2.1.2"
 Authlib = "^1.2.0"
 tortoise-orm = {extras = ["accel", "asyncpg"], version = "^0.19.2"}
+bcrypt = "^4.0.1"
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.18.3"
 watchfiles = "^0.18.1"
 pydantic = {extras = ["dotenv"], version = "^1.10.2"}
+requests = "^2.28.1"
 
 
 [tool.poetry.group.migration.dependencies]
