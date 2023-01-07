@@ -1,45 +1,78 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import Counter from './components/Counter.svelte'
+  import "carbon-components-svelte/css/all.css";
+  import {
+    Header,
+    HeaderNav,
+    HeaderNavItem,
+    SkipToContent,
+    Content,
+    Theme,
+    SideNav,
+    SideNavItems,
+    SideNavLink,
+    SideNavMenuItem,
+    SideNavMenu,
+    SideNavDivider,
+    HeaderUtilities,
+    HeaderGlobalAction,
+  } from "carbon-components-svelte";
+  import { Router, Link, Route } from "svelte-routing";
+  import type { CarbonTheme } from "carbon-components-svelte/types/Theme/Theme.svelte";
+  import Fade from "carbon-icons-svelte/lib/Fade.svelte";
+  import Asleep from "carbon-icons-svelte/lib/Asleep.svelte";
+  let isSideNavOpen = false;
+  let theme: CarbonTheme;
+
+  function toggleTheme() {
+    if (theme !== "white") {
+      theme = "white";
+    } else {
+      theme = "g80";
+    }
+  }
+
+  import Home from "./pages/Home.svelte";
+  import Signin from "./pages/Signin.svelte";
 </script>
 
-<main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer"> 
-      <img src="/vite.svg" class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer"> 
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
+<Theme bind:theme persist persistKey="__carbon-theme" />
 
-  <div class="card">
-    <Counter />
-  </div>
+<Router>
+  <Header platformName="Marron" bind:isSideNavOpen>
+    <svelte:fragment slot="skip-to-content">
+      <SkipToContent />
+    </svelte:fragment>
+    <HeaderNav>
+      <HeaderNavItem href="/" text="Link 1" />
+    </HeaderNav>
+    <HeaderUtilities>
+      <HeaderGlobalAction
+        aria-label="Settings"
+        icon={Asleep}
+        on:click={toggleTheme}
+      />
+    </HeaderUtilities>
+  </Header>
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
+  <SideNav bind:isOpen={isSideNavOpen} rail>
+    <SideNavItems>
+      <SideNavLink icon={Fade} text="Link 1" href="/" isSelected />
+      <SideNavLink icon={Fade} text="Link 2" href="/" />
+      <SideNavLink icon={Fade} text="Link 3" href="/" />
+      <SideNavMenu icon={Fade} text="Menu">
+        <SideNavMenuItem href="/" text="Link 1" />
+        <SideNavMenuItem href="/" text="Link 2" />
+        <SideNavMenuItem href="/" text="Link 3" />
+      </SideNavMenu>
+      <SideNavDivider />
+      <SideNavLink icon={Fade} text="Link 4" href="/" />
+    </SideNavItems>
+  </SideNav>
 
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
-</main>
-
-<style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
-  }
-</style>
+  <Content>
+    <main>
+      <Route path="" component={Home} />
+      <Route path="/signin" component={Signin} />
+    </main>
+  </Content>
+</Router>
