@@ -15,11 +15,13 @@
     SideNavDivider,
     HeaderUtilities,
     HeaderGlobalAction,
+    HeaderActionLink,
   } from "carbon-components-svelte";
-  import { Router, Link, Route } from "svelte-routing";
+  import { Router, Link, Route, navigate } from "svelte-routing";
   import type { CarbonTheme } from "carbon-components-svelte/types/Theme/Theme.svelte";
   import Fade from "carbon-icons-svelte/lib/Fade.svelte";
   import Asleep from "carbon-icons-svelte/lib/Asleep.svelte";
+  import UserAvatarFilledAlt from "carbon-icons-svelte/lib/UserAvatarFilledAlt.svelte";
   let isSideNavOpen = false;
   let theme: CarbonTheme;
 
@@ -51,6 +53,7 @@
         icon={Asleep}
         on:click={toggleTheme}
       />
+      <HeaderGlobalAction icon={UserAvatarFilledAlt} on:click={() => navigate("signin")} />
     </HeaderUtilities>
   </Header>
 
