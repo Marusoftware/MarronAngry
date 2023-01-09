@@ -10,9 +10,9 @@ router=APIRouter()
 @router.put("/", response_model=str)
 async def otpSetup(user: get_user=Depends()):
     totp=TOTP(new=True)
-    user.key=totp.key
+    user.otp_key=totp.base32_key
     await user.save()
-    return totp.to_uri(label="User", issuer="Marron")
+    return totp.to_uri(label=user.email).replace('"',"")
 
 @router.post("/", response_model=Token)
 async def otpAuth(request:Request, pre_token:str, token:str):
@@ -20,7 +20,7 @@ async def otpAuth(request:Request, pre_token:str, token:str):
     user=db_token.user
     totp=TOTP(key=user.otp_key)
     await db_token.delete()
-    totp.verify(token=token)
+    totp.match(token=token)
     db_token=await TokenDB.create(token=secrets.token_hex(32), token_type=TokenType.pre, user=user)
     if "users" not in request.session:
         request.session["users"]=[]

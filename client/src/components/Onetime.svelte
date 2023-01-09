@@ -29,7 +29,7 @@
     }
 </script>
 
-<ComposedModal bind:open on:submit>
+<ComposedModal bind:open on:submit={submit}>
     <ModalHeader label="One time token" title="ワンタイムトークンを入力してください。" />
     <ModalBody hasForm>
         <TextInput

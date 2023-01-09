@@ -16,6 +16,7 @@
   import { required } from 'svelte-forms/validators';
   import { authAPI, accessToken } from "../openapi";
   import Onetime from "../components/Onetime.svelte";
+    import { navigate } from "svelte-routing";
 
   const name = field('name', '', [required()])
   const password = field('password', '', [required()])
@@ -48,7 +49,7 @@
   <Row>
     <Column>
       <h1>初めての方と<br />他のサービスでのログインをされる方</h1>
-      <Button>Marusoftwareアカウントを作成</Button>
+      <Button on:click={() => navigate("signup")} >Marusoftwareアカウントを作成</Button>
       <Tile>
         <Button icon={Google} iconDescription="Signin/Signup with Google" href="/api/v1/auth/sso/google" />
       </Tile>

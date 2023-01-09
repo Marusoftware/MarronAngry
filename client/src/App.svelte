@@ -34,6 +34,7 @@
 
   import Home from "./pages/Home.svelte";
   import Signin from "./pages/Signin.svelte";
+    import Signup from "./pages/Signup.svelte";
 </script>
 
 <Theme bind:theme persist persistKey="__carbon-theme" />
@@ -75,6 +76,7 @@
     <main>
       <Route path="" component={Home} />
       <Route path="/signin" component={Signin} />
+      <Route path="/signup" component={Signup} />
     </main>
   </Content>
 </Router>
