@@ -1,4 +1,4 @@
-from tortoise.fields import UUIDField, CharField, BooleanField, OneToOneRelation
+from tortoise.fields import UUIDField, CharField, BooleanField, ReverseRelation
 from tortoise.models import Model
 
 class User(Model):
@@ -7,6 +7,8 @@ class User(Model):
     fullname = CharField(max_length=1024, default="", description="User long name")
     is_dev = BooleanField(default=False, description="Is this user developer?")
     email = CharField(max_length=1024, description="User email")
-    auth:OneToOneRelation["Auth"]
+    password = CharField(max_length=1024, null=True, description="User password")
+    otp_key = CharField(max_length=32, null=True, description="OTP Secret Key")
+    tokens:ReverseRelation["Token"]
 
-from .auth import Auth
+from .auth import Token
