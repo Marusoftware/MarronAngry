@@ -39,7 +39,3 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await final_db()
-
-@app.get("/app")
-def read_main(request: Request):
-    return {"message": "Hello World", "root_path": request.scope.get("root_path")}

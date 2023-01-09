@@ -1,6 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from uuid import UUID
 
-class UserCreate(BaseModel):
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    user_id:UUID
+
+class User(BaseModel):
+    id:UUID
     name:str
     fullname:str
-    email:str
+    is_dev:bool
+    email:EmailStr

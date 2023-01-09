@@ -1,5 +1,8 @@
+import secrets
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
+from ...models.db import User as UserDB, Token as TokenDB, TokenType
+from ...models.read.user import User
 
 config = Config('.env')  # read config from .env file
 oauth = OAuth(config)
@@ -10,18 +13,27 @@ oauth.register(
         'scope': 'openid email profile'
     }
 )
-
+class test:
+    async def authorize_redirect(self, *args, **options):
+        return str(config.get("GOOGLE_CLIENT_SECRET"))
+oauth.test=test()
+    
 from fastapi import APIRouter, Request
 
 router=APIRouter()
 
-@router.get("/google")
-async def login_via_google(request: Request):
-    redirect_uri = request.url_for('auth_via_google')
-    return await oauth.google.authorize_redirect(request, redirect_uri)
+@router.get("/{service}")
+async def sso_setup(request: Request, service:str):
+    redirect_uri = str(config.get("SSO_REDIRECT")).replace("{service}", service)#request.url_for('auth_via_google')
+    return await getattr(oauth, service).authorize_redirect(request, redirect_uri)
 
-@router.get("/google/callback")
-async def auth_via_google(request: Request):
-    token = await oauth.google.authorize_access_token(request)
-    user = token
-    return dict(user)
+@router.get("/{service}/callback", response_model=User)
+async def sso_callback(request: Request, service:str):
+    token = await getattr(oauth, service).authorize_access_token(request)
+    sso_user=token["userinfo"]
+    user, res=await UserDB.get_or_create(name=sso_user["name"], email=sso_user["email"])
+    token=await TokenDB.create(token=secrets.token_hex(32), token_type=TokenType.bearer, user=user)
+    if "users" not in request.session:
+        request.session["users"]=[]
+    request.session["users"].append({"name":user.name, "id":str(user.id), "token":token.token})
+    return user

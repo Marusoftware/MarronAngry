@@ -31,6 +31,11 @@ import {
     UserCreateToJSON,
 } from '../models';
 
+export interface AuthAuthRequest {
+    preToken: string;
+    token: string;
+}
+
 export interface AuthSigninRequest {
     username: string;
     password: string;
@@ -60,8 +65,24 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * Auth
      */
-    async authAuthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async authAuthRaw(requestParameters: AuthAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.preToken === null || requestParameters.preToken === undefined) {
+            throw new runtime.RequiredError('preToken','Required parameter requestParameters.preToken was null or undefined when calling authAuth.');
+        }
+
+        if (requestParameters.token === null || requestParameters.token === undefined) {
+            throw new runtime.RequiredError('token','Required parameter requestParameters.token was null or undefined when calling authAuth.');
+        }
+
         const queryParameters: any = {};
+
+        if (requestParameters.preToken !== undefined) {
+            queryParameters['pre_token'] = requestParameters.preToken;
+        }
+
+        if (requestParameters.token !== undefined) {
+            queryParameters['token'] = requestParameters.token;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -78,8 +99,8 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * Auth
      */
-    async authAuth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.authAuthRaw(initOverrides);
+    async authAuth(requestParameters: AuthAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.authAuthRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -90,6 +111,11 @@ export class AuthApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
 
         const response = await this.request({
             path: `/auth/otp/`,
