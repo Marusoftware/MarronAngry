@@ -31,7 +31,7 @@ import {
     UserCreateToJSON,
 } from '../models';
 
-export interface AuthAuthRequest {
+export interface AuthOtpAuthRequest {
     preToken: string;
     token: string;
 }
@@ -63,15 +63,15 @@ export interface AuthSsoSetupRequest {
 export class AuthApi extends runtime.BaseAPI {
 
     /**
-     * Auth
+     * Otpauth
      */
-    async authAuthRaw(requestParameters: AuthAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async authOtpAuthRaw(requestParameters: AuthOtpAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Token>> {
         if (requestParameters.preToken === null || requestParameters.preToken === undefined) {
-            throw new runtime.RequiredError('preToken','Required parameter requestParameters.preToken was null or undefined when calling authAuth.');
+            throw new runtime.RequiredError('preToken','Required parameter requestParameters.preToken was null or undefined when calling authOtpAuth.');
         }
 
         if (requestParameters.token === null || requestParameters.token === undefined) {
-            throw new runtime.RequiredError('token','Required parameter requestParameters.token was null or undefined when calling authAuth.');
+            throw new runtime.RequiredError('token','Required parameter requestParameters.token was null or undefined when calling authOtpAuth.');
         }
 
         const queryParameters: any = {};
@@ -93,21 +93,21 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse(response, (jsonValue) => TokenFromJSON(jsonValue));
     }
 
     /**
-     * Auth
+     * Otpauth
      */
-    async authAuth(requestParameters: AuthAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.authAuthRaw(requestParameters, initOverrides);
+    async authOtpAuth(requestParameters: AuthOtpAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Token> {
+        const response = await this.authOtpAuthRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
-     * Setup
+     * Otpsetup
      */
-    async authSetupRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async authOtpSetupRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -128,10 +128,10 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
-     * Setup
+     * Otpsetup
      */
-    async authSetup(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.authSetupRaw(initOverrides);
+    async authOtpSetup(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.authOtpSetupRaw(initOverrides);
         return await response.value();
     }
 

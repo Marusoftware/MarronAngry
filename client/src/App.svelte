@@ -14,10 +14,9 @@
     SideNavMenu,
     SideNavDivider,
     HeaderUtilities,
-    HeaderGlobalAction,
-    HeaderActionLink,
+    HeaderGlobalAction
   } from "carbon-components-svelte";
-  import { Router, Link, Route, navigate } from "svelte-routing";
+  import { Router, Route, navigate } from "svelte-routing";
   import type { CarbonTheme } from "carbon-components-svelte/types/Theme/Theme.svelte";
   import Fade from "carbon-icons-svelte/lib/Fade.svelte";
   import Asleep from "carbon-icons-svelte/lib/Asleep.svelte";

@@ -14,11 +14,14 @@
   
   import { form, field } from 'svelte-forms';
   import { required } from 'svelte-forms/validators';
-  import { authAPI, userAPI, accessToken } from "../openapi";
+  import { authAPI, accessToken } from "../openapi";
+  import Onetime from "../components/Onetime.svelte";
 
   const name = field('name', '', [required()])
   const password = field('password', '', [required()])
   const loginForm = form(name, password)
+  let OnetimeOpen=false
+  let preToken=""
 
   async function submit(e:Event) {
     e.preventDefault()
@@ -30,9 +33,16 @@
       username:$name.value,
       password:$password.value
     })
-    accessToken.set(token.accessToken)
+    if(token.tokenType=="bearer"){
+      accessToken.set(token.accessToken)
+    } else {
+      preToken=token.accessToken
+      OnetimeOpen=true
+    }
   }
 </script>
+
+<Onetime bind:open={OnetimeOpen} bind:preToken />
 
 <Grid>
   <Row>
