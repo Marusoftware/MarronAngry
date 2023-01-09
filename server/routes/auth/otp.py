@@ -7,6 +7,8 @@ import secrets
 
 router=APIRouter()
 
+#TODO: Delete
+
 @router.put("/", response_model=str)
 async def otpSetup(user: get_user=Depends()):
     totp=TOTP(new=True)
