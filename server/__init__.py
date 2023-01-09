@@ -1,7 +1,10 @@
-from fastapi import FastAPI, Request
+from fastapi import APIRouter, FastAPI, Request
 from fastapi.security import OAuth2PasswordBearer
 
-app = FastAPI(title="Marron API", description="API of Marron")
+def custom_generate_unique_id(route: APIRouter):
+    return f"{f'{route.tags[0]}-'if len(route.tags) else ''}{route.name}"
+
+app = FastAPI(title="Marron API", description="API of Marron", generate_unique_id_function=custom_generate_unique_id)
 
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["marron.marusoftware.net", "localhost"])
@@ -17,7 +20,7 @@ app.add_middleware(SessionMiddleware, secret_key=randomstr(15))
 
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(CORSMiddleware,
-    allow_origins=["https://marron.marusoftware.net", "http://localhost:8000"],
+    allow_origins=["https://marron.marusoftware.net", "http://localhost:5000", "http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
