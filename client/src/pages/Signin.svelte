@@ -49,7 +49,7 @@
   <Row>
     <Column>
       <h1>初めての方と<br />他のサービスでのログインをされる方</h1>
-      <Button on:click={() => navigate("signup")} >Marusoftwareアカウントを作成</Button>
+      <Button on:click={() => navigate("/signup")} >Marusoftwareアカウントを作成</Button>
       <Tile>
         <Button icon={Google} iconDescription="Signin/Signup with Google" href="/api/v1/auth/sso/google" />
       </Tile>

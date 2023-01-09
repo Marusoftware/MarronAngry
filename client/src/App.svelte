@@ -53,7 +53,7 @@
         icon={Asleep}
         on:click={toggleTheme}
       />
-      <HeaderGlobalAction icon={UserAvatarFilledAlt} on:click={() => navigate("signin")} />
+      <HeaderGlobalAction icon={UserAvatarFilledAlt} on:click={() => navigate("/signin")} />
     </HeaderUtilities>
   </Header>
 
