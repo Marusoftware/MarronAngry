@@ -18,7 +18,8 @@
   import Onetime from "../components/Onetime.svelte";
     import { navigate } from "svelte-routing";
 
-  const name = field('name', '', [required()])
+  export let username=""
+  const name = field('name', username, [required()])
   const password = field('password', '', [required()])
   const loginForm = form(name, password)
   let OnetimeOpen=false

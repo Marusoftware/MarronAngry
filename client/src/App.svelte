@@ -76,6 +76,9 @@
     <main>
       <Route path="" component={Home} />
       <Route path="/signin" component={Signin} />
+      <Route path="/signin/:username" let:params>
+        <Signin username={params.username} />
+      </Route>
       <Route path="/signup" component={Signup} />
     </main>
   </Content>
