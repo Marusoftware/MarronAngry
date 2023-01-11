@@ -5,3 +5,7 @@ class UserCreate(BaseModel):
     fullname:str
     email:EmailStr
     password:str
+
+class OrganizationCreate(BaseModel):
+    name:str
+    description:str
