@@ -8,25 +8,24 @@
     PasswordInput,
     TextInput,
     Tile,
-    Link,
     ProgressIndicator,
     ProgressStep,
     OrderedList,
     ListItem
   } from "carbon-components-svelte";
-  import Google from "svelte-material-icons/Google.svelte";
   
   import { form, field } from 'svelte-forms';
-  import { email, required } from 'svelte-forms/validators';
+  import { email, matchField, required } from 'svelte-forms/validators';
   import { authAPI, userAPI, accessToken, type User } from "../openapi";
-    import { navigate } from "svelte-routing";
-    import OnetimeSetup from "../components/OnetimeSetup.svelte";
+  import { navigate } from "svelte-routing";
+  import OnetimeSetup from "../components/OnetimeSetup.svelte";
 
   const name = field('name', '', [required()])
   const fullname = field('fullname', '', [])
   const mail = field('email', '', [required(), email()])
   const password = field('password', '', [required()])
-  const loginForm = form(name, fullname, mail, password)
+  const passwordConfirmation = field('passwordConfirmation', '', [matchField(password)])
+  const loginForm = form(name, fullname, mail, password, passwordConfirmation)
 
   let currentIndex=0
   let user:User
@@ -124,6 +123,7 @@
         ユーザー名とメールアドレス、パスワードはアカウントへのログイン時に使用します。<br />
         メールアドレスは、ご利用者様へのご連絡に使用する場合もあります。<br />
         パスワードはなるべく推測されにくく多様な種類の文字を用いた長いものにしてください。<br />
+        また、タイプミスによるサインイン不能を防止するため、パスワードは2回入力してください。<br />
         フルネームの入力は任意で、他のユーザーには表示されません。<br />
       </Tile>
       </Column>
@@ -152,6 +152,7 @@
           invalidText={$mail.errors.join(", ")}
         />
         <PasswordInput labelText="Password" placeholder="Enter password..." bind:value={$password.value} invalid={$password.invalid} invalidText={$password.errors.join(", ")} />
+        <PasswordInput labelText="Password Confirmation" placeholder="Enter password again..." bind:value={$passwordConfirmation.value} invalid={$passwordConfirmation.invalid} invalidText={$passwordConfirmation.errors.join(", ")} />
         <Button type="submit" disabled={!$loginForm.valid} >サインアップ</Button>
       </Form>
     </Column>
