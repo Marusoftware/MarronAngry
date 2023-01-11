@@ -15,14 +15,14 @@
   } from "carbon-components-svelte";
   
   import { form, field } from 'svelte-forms';
-  import { email, matchField, required } from 'svelte-forms/validators';
+  import { email, matchField, max, required } from 'svelte-forms/validators';
   import { authAPI, userAPI, accessToken, type User } from "../openapi";
   import { navigate } from "svelte-routing";
   import OnetimeSetup from "../components/OnetimeSetup.svelte";
 
-  const name = field('name', '', [required()])
-  const fullname = field('fullname', '', [])
-  const mail = field('email', '', [required(), email()])
+  const name = field('name', '', [required(), max(1024)])
+  const fullname = field('fullname', '', [max(1024)])
+  const mail = field('email', '', [required(), email(), max(1024)])
   const password = field('password', '', [required()])
   const passwordConfirmation = field('passwordConfirmation', '', [matchField(password)])
   const loginForm = form(name, fullname, mail, password, passwordConfirmation)

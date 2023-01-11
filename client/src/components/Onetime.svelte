@@ -7,12 +7,12 @@
         TextInput
     } from "carbon-components-svelte"
     import { form, field } from 'svelte-forms';
-    import { required } from "svelte-forms/validators";
+    import { max, required } from "svelte-forms/validators";
     import { accessToken, authAPI } from "../openapi";
     export let open=true;
     export let preToken:string
 
-    const token=field("token", "", [required()])
+    const token=field("token", "", [required(), max(6)])
     const onetimeForm=form(token)
 
     async function submit(e:Event){

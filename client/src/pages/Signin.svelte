@@ -13,14 +13,14 @@
   import Google from "svelte-material-icons/Google.svelte";
   
   import { form, field } from 'svelte-forms';
-  import { required } from 'svelte-forms/validators';
+  import { max, required } from 'svelte-forms/validators';
   import { authAPI, accessToken } from "../openapi";
   import Onetime from "../components/Onetime.svelte";
     import { navigate } from "svelte-routing";
 
   export let username=""
-  const name = field('name', username, [required()])
-  const password = field('password', '', [required()])
+  const name = field('name', username, [required(), max(1024)])
+  const password = field('password', '', [required(), max(1024)])
   const loginForm = form(name, password)
   let OnetimeOpen=false
   let preToken=""
