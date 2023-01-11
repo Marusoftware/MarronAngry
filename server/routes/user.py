@@ -1,7 +1,10 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from ..security import get_user
-from ..models.read.user import User
+from ..models.read.user import User, UserOpen
+from ..models.write import UserCreate
+from ..models.db import User as UserDB
+from .auth.passwd import crypt
 
 router=APIRouter(tags=["user"])
 
@@ -9,6 +12,22 @@ router=APIRouter(tags=["user"])
 async def me(user:get_user=Depends()):
     return user
 
-@router.get("/{id}")
+@router.get("/{id}", response_model=UserOpen)
 async def get(id:UUID):
-    await User.get_or_none(id=id)
+    return await UserDB.get(id=id)
+
+@router.delete("/me")
+async def delete_me(user:get_user=Depends(), password:str=None):
+    if user.password is not None and password is None:
+        raise HTTPException(status_code=400, detail="Password is wrong")
+    if user.password is not None:
+        if not crypt.verify(password, user.password):
+            raise HTTPException(status_code=400, detail="Password is wrong")
+    await user.delete()
+
+@router.put("/me", response_model=User)
+async def update_me(user:UserCreate, user_db:get_user=Depends()):
+    user=user.dict()
+    user["password"]=crypt.hash(user["password"])
+    await user_db.update_from_dict(user)
+    return user_db

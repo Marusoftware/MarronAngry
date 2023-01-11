@@ -12,3 +12,8 @@ class User(BaseModel):
     fullname:str
     is_dev:bool
     email:EmailStr
+
+class UserOpen(BaseModel):
+    id:UUID
+    name:str
+    is_dev:bool
