@@ -1,7 +1,35 @@
 import { get, writable } from 'svelte/store';
 import { AuthApi, UserApi, Configuration } from '../openapi';
 
+interface Notification {
+    id?:number,
+    kind:"error" | "info" | "success" | "warning",
+    title:string,
+    subtitle?: string,
+    caption?: string,
+    timeout?: number
+}
+
 export const accessToken=writable("")
+export const notifications=writable<Notification[]>([])
+
+export function showNotification(notification:Notification){
+    const defaults={
+        id :Math.floor(Math.random() * 10000),
+        subtitle: "",
+        caption: "",
+        timeout:0
+    }
+    notifications.update((all) =>[{
+        ...defaults,
+        ...notification
+    }, ...all])
+    return defaults.id
+}
+
+export const destroyNotification = (id:number) => {
+    notifications.update((all) => all.filter((t) => t.id !== id))
+  }
 
 async function getAccessToken(){
     return "Bearer "+get(accessToken)
