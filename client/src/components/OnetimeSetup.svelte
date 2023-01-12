@@ -5,7 +5,7 @@
         ModalBody,
         ModalFooter,
     } from "carbon-components-svelte"
-    import { authAPI } from "../openapi";
+    import { authAPI } from "../utils";
     import { QRCodeImage } from "svelte-qrcode-image";
     export let open=true;
 

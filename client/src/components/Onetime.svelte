@@ -8,7 +8,7 @@
     } from "carbon-components-svelte"
     import { form, field } from 'svelte-forms';
     import { max, required } from "svelte-forms/validators";
-    import { accessToken, authAPI } from "../openapi";
+    import { accessToken, authAPI } from "../utils";
     export let open=true;
     export let preToken:string
 

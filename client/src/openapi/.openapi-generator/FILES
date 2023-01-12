@@ -1,12 +1,17 @@
 apis/AuthApi.ts
+apis/OrganizationApi.ts
 apis/UserApi.ts
 apis/index.ts
 index.ts
 models/HTTPValidationError.ts
 models/LocationInner.ts
+models/Member.ts
+models/Organization.ts
+models/OrganizationCreate.ts
 models/Token.ts
 models/User.ts
 models/UserCreate.ts
+models/UserOpen.ts
 models/ValidationError.ts
 models/index.ts
 runtime.ts

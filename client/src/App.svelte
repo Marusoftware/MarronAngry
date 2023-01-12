@@ -14,9 +14,10 @@
     SideNavMenu,
     SideNavDivider,
     HeaderUtilities,
-    HeaderGlobalAction
+    HeaderGlobalAction,
   } from "carbon-components-svelte";
   import { Router, Route, navigate } from "svelte-routing";
+  import CustomNotification from "./components/CustomNotification.svelte";
   import type { CarbonTheme } from "carbon-components-svelte/types/Theme/Theme.svelte";
   import Fade from "carbon-icons-svelte/lib/Fade.svelte";
   import Asleep from "carbon-icons-svelte/lib/Asleep.svelte";
@@ -34,7 +35,8 @@
 
   import Home from "./pages/Home.svelte";
   import Signin from "./pages/Signin.svelte";
-    import Signup from "./pages/Signup.svelte";
+  import Signup from "./pages/Signup.svelte";
+  
 </script>
 
 <Theme bind:theme persist persistKey="__carbon-theme" />
@@ -72,6 +74,8 @@
     </SideNavItems>
   </SideNav>
 
+  
+  
   <Content>
     <main>
       <Route path="" component={Home} />

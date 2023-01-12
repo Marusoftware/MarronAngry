@@ -16,15 +16,16 @@
   
   import { form, field } from 'svelte-forms';
   import { email, matchField, max, required } from 'svelte-forms/validators';
-  import { authAPI, userAPI, accessToken, type User } from "../openapi";
+  import { authAPI, accessToken } from "../utils";
   import { navigate } from "svelte-routing";
   import OnetimeSetup from "../components/OnetimeSetup.svelte";
+  import type { User } from "../openapi";
 
   const name = field('name', '', [required(), max(1024)])
   const fullname = field('fullname', '', [max(1024)])
   const mail = field('email', '', [required(), email(), max(1024)])
   const password = field('password', '', [required()])
-  const passwordConfirmation = field('passwordConfirmation', '', [matchField(password)])
+  const passwordConfirmation = field('passwordConfirmation', '', [required(), matchField(password)])
   const loginForm = form(name, fullname, mail, password, passwordConfirmation)
 
   let currentIndex=0

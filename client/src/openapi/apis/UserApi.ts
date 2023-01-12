@@ -17,16 +17,30 @@ import * as runtime from '../runtime';
 import type {
   HTTPValidationError,
   User,
+  UserCreate,
+  UserOpen,
 } from '../models';
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     UserFromJSON,
     UserToJSON,
+    UserCreateFromJSON,
+    UserCreateToJSON,
+    UserOpenFromJSON,
+    UserOpenToJSON,
 } from '../models';
+
+export interface UserDeleteMeRequest {
+    password?: string;
+}
 
 export interface UserGetRequest {
     id: string;
+}
+
+export interface UserUpdateMeRequest {
+    userCreate: UserCreate;
 }
 
 /**
@@ -35,9 +49,44 @@ export interface UserGetRequest {
 export class UserApi extends runtime.BaseAPI {
 
     /**
+     * Delete Me
+     */
+    async userDeleteMeRaw(requestParameters: UserDeleteMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        const queryParameters: any = {};
+
+        if (requestParameters.password !== undefined) {
+            queryParameters['password'] = requestParameters.password;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/user/me`,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Delete Me
+     */
+    async userDeleteMe(requestParameters: UserDeleteMeRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.userDeleteMeRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Get
      */
-    async userGetRaw(requestParameters: UserGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async userGetRaw(requestParameters: UserGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserOpen>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling userGet.');
         }
@@ -53,13 +102,13 @@ export class UserApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserOpenFromJSON(jsonValue));
     }
 
     /**
      * Get
      */
-    async userGet(requestParameters: UserGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+    async userGet(requestParameters: UserGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserOpen> {
         const response = await this.userGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -92,6 +141,44 @@ export class UserApi extends runtime.BaseAPI {
      */
     async userMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {
         const response = await this.userMeRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Update Me
+     */
+    async userUpdateMeRaw(requestParameters: UserUpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
+        if (requestParameters.userCreate === null || requestParameters.userCreate === undefined) {
+            throw new runtime.RequiredError('userCreate','Required parameter requestParameters.userCreate was null or undefined when calling userUpdateMe.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/user/me`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserCreateToJSON(requestParameters.userCreate),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));
+    }
+
+    /**
+     * Update Me
+     */
+    async userUpdateMe(requestParameters: UserUpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {
+        const response = await this.userUpdateMeRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

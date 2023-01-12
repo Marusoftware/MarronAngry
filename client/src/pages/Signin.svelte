@@ -14,7 +14,7 @@
   
   import { form, field } from 'svelte-forms';
   import { max, required } from 'svelte-forms/validators';
-  import { authAPI, accessToken } from "../openapi";
+  import { authAPI, accessToken } from "../utils";
   import Onetime from "../components/Onetime.svelte";
     import { navigate } from "svelte-routing";
 
