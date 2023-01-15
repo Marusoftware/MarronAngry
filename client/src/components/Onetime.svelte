@@ -27,13 +27,15 @@
 
 <Modal bind:open title="One time token">
     <Heading>ワンタイムトークンを入力してください。</Heading>
-        <Field
-          type="password"
-          labelText="One time token"
-          placeholder="Enter an One time token..."
-          bind:value={$token.value}
-          invalid={$token.invalid}
-          invalidText={$token.errors.join(", ")}
-        />
+    <Field
+        type="password"
+        labelText="One time token"
+        placeholder="Enter an One time token..."
+        bind:value={$token.value}
+        invalid={$token.invalid}
+        invalidText={$token.errors.join(", ")}
+    />
+    <svelte:fragment slot="footer">
         <Button on:click={submit} disabled={!$onetimeForm.valid}>認証</Button>
+    </svelte:fragment>
 </Modal>
