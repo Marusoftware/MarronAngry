@@ -8,13 +8,15 @@ from ...models.db.auth import Token as TokenDB, TokenType
 import secrets
 from passlib.context import CryptContext
 
+from tortoise.expressions import Q
+
 crypt=CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 router=APIRouter()
 
 @router.post("/signin", response_model=Token)
 async def signin(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
-    user=await UserDB.get_or_none(name=form_data.username)
+    user=await UserDB.get_or_none(Q(name=form_data.username) | Q(email=form_data.username))
     if user is None:
         raise HTTPException(status_code=400, detail="Password or Username is wrong.")
     if user.password is not None:
