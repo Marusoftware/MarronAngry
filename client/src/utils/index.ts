@@ -3,7 +3,7 @@ import { AuthApi, UserApi, Configuration } from '../openapi';
 
 interface Notification {
     id?:number,
-    kind:"error" | "info" | "success" | "warning",
+    kind:"info"|"warn",
     title:string,
     subtitle?: string,
     caption?: string,

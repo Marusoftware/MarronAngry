@@ -1,14 +1,9 @@
 <script lang="ts">
-    import {
-        ComposedModal,
-        ModalHeader,
-        ModalBody,
-        ModalFooter,
-        TextInput
-    } from "carbon-components-svelte"
+    import { Button, Heading, Modal } from "flowbite-svelte";
     import { form, field } from 'svelte-forms';
     import { max, required } from "svelte-forms/validators";
     import { accessToken, authAPI } from "../utils";
+    import Field from "./Field.svelte";
     export let open=true;
     export let preToken:string
 
@@ -26,19 +21,19 @@
             token:$token.value
         })
         accessToken.set(token_auth.accessToken)
+        open=false;
     }
 </script>
 
-<ComposedModal bind:open on:submit={submit}>
-    <ModalHeader label="One time token" title="ワンタイムトークンを入力してください。" />
-    <ModalBody hasForm>
-        <TextInput
+<Modal bind:open title="One time token">
+    <Heading>ワンタイムトークンを入力してください。</Heading>
+        <Field
+          type="password"
           labelText="One time token"
           placeholder="Enter an One time token..."
           bind:value={$token.value}
           invalid={$token.invalid}
           invalidText={$token.errors.join(", ")}
         />
-    </ModalBody>
-    <ModalFooter primaryButtonText="Proceed" primaryButtonDisabled={!$onetimeForm.valid} />
-</ComposedModal>
+        <Button on:click={submit} disabled={!$onetimeForm.valid}>認証</Button>
+</Modal>

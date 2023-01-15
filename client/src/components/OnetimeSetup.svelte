@@ -1,14 +1,10 @@
 <script lang="ts">
-    import {
-        ComposedModal,
-        ModalHeader,
-        ModalBody,
-        ModalFooter,
-    } from "carbon-components-svelte"
     import { authAPI } from "../utils";
     import { QRCodeImage } from "svelte-qrcode-image";
+    import { Button, Heading, Modal } from "flowbite-svelte";
+    import { createEventDispatcher } from "svelte";
     export let open=true;
-
+    const dispatch=createEventDispatcher()
     let value="a"
 
     async function onOpen() {
@@ -17,13 +13,15 @@
 
     async function submit(){
         open=false
+        dispatch("submit")
     }
 </script>
 
-<ComposedModal bind:open on:submit={submit} on:open={onOpen} on:close>
-    <ModalHeader label="One time token" title="QRコードを認証アプリで読み取ってください。" />
-        <ModalBody>
-            <QRCodeImage text={value}/>
-        </ModalBody>
-    <ModalFooter primaryButtonText="完了" secondaryButtonText="キャンセル" />
-</ComposedModal>
+<Modal bind:open on:submit={submit} on:open={onOpen} title="One time token">
+    <Heading>QRコードを認証アプリで読み取ってください。</Heading>
+    <QRCodeImage text={value}/>
+    <svelte:fragment slot='footer'>
+        <Button on:click={submit}>完了</Button>
+        <Button on:click={() => open=false}>キャンセル</Button>
+    </svelte:fragment>
+</Modal>

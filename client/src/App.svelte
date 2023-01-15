@@ -1,89 +1,72 @@
 <script lang="ts">
-  import "carbon-components-svelte/css/all.css";
-  import {
-    Header,
-    HeaderNav,
-    HeaderNavItem,
-    SkipToContent,
-    Content,
-    Theme,
-    SideNav,
-    SideNavItems,
-    SideNavLink,
-    SideNavMenuItem,
-    SideNavMenu,
-    SideNavDivider,
-    HeaderUtilities,
-    HeaderGlobalAction,
-  } from "carbon-components-svelte";
+  import { 
+    Navbar,
+    NavBrand,
+    NavHamburger,
+    NavUl,
+    NavLi,
+    Avatar,
+    Dropdown,
+    DropdownHeader,
+    DropdownItem,
+    DropdownDivider,
+    Button,
+    DarkMode,
+  } from "flowbite-svelte";
   import { Router, Route, navigate } from "svelte-routing";
-  import CustomNotification from "./components/CustomNotification.svelte";
-  import type { CarbonTheme } from "carbon-components-svelte/types/Theme/Theme.svelte";
-  import Fade from "carbon-icons-svelte/lib/Fade.svelte";
-  import Asleep from "carbon-icons-svelte/lib/Asleep.svelte";
-  import UserAvatarFilledAlt from "carbon-icons-svelte/lib/UserAvatarFilledAlt.svelte";
-  let isSideNavOpen = false;
-  let theme: CarbonTheme;
-
-  function toggleTheme() {
-    if (theme !== "white") {
-      theme = "white";
-    } else {
-      theme = "g80";
-    }
-  }
+  import { destroyNotification, notifications } from "./utils";
 
   import Home from "./pages/Home.svelte";
   import Signin from "./pages/Signin.svelte";
   import Signup from "./pages/Signup.svelte";
-  
+  import Notification from "./components/Notification.svelte";
+  import Field from "./components/Field.svelte";
+
 </script>
 
-<Theme bind:theme persist persistKey="__carbon-theme" />
-
+<div class="bg-white dark:bg-gray-800 min-h-screen">
+<Navbar let:hidden let:toggle>
+  <NavBrand href="/">
+    <img src="/marron.jpg" alt="Marron Logo" class="mr-3 h-6 sm:h-9" />
+    <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Marron</span>
+  </NavBrand>
+  <div class="flex items-center md:order-2">
+    <!-- <Avatar id="avatar-menu" src="/images/profile-picture-3.webp" /> -->
+    <Button size="sm" on:click={() => navigate("/signin")} >サインイン</Button>
+    <DarkMode />
+    <NavHamburger on:click={toggle} class1="w-full md:flex md:w-auto md:order-1"/>
+  </div>
+  <Dropdown placement="bottom" triggeredBy="#avatar-menu">
+    <DropdownHeader>
+    <span class="block text-sm"> Bonnie Green </span>
+    <span class="block truncate text-sm font-medium"> name@flowbite.com </span>
+    </DropdownHeader>
+    <DropdownItem>Dashboard</DropdownItem>
+    <DropdownItem>Settings</DropdownItem>
+    <DropdownItem>Earnings</DropdownItem>
+    <DropdownDivider />
+    <DropdownItem>Sign out</DropdownItem>
+  </Dropdown>
+  <NavUl {hidden}>
+    <NavLi href="/" active={true}>Home</NavLi>
+  </NavUl>
+</Navbar>
 <Router>
-  <Header platformName="Marron" bind:isSideNavOpen>
-    <svelte:fragment slot="skip-to-content">
-      <SkipToContent />
-    </svelte:fragment>
-    <HeaderNav>
-      <HeaderNavItem href="/" text="Link 1" />
-    </HeaderNav>
-    <HeaderUtilities>
-      <HeaderGlobalAction
-        aria-label="Settings"
-        icon={Asleep}
-        on:click={toggleTheme}
-      />
-      <HeaderGlobalAction icon={UserAvatarFilledAlt} on:click={() => navigate("/signin")} />
-    </HeaderUtilities>
-  </Header>
-
-  <SideNav bind:isOpen={isSideNavOpen} rail>
-    <SideNavItems>
-      <SideNavLink icon={Fade} text="Link 1" href="/" isSelected />
-      <SideNavLink icon={Fade} text="Link 2" href="/" />
-      <SideNavLink icon={Fade} text="Link 3" href="/" />
-      <SideNavMenu icon={Fade} text="Menu">
-        <SideNavMenuItem href="/" text="Link 1" />
-        <SideNavMenuItem href="/" text="Link 2" />
-        <SideNavMenuItem href="/" text="Link 3" />
-      </SideNavMenu>
-      <SideNavDivider />
-      <SideNavLink icon={Fade} text="Link 4" href="/" />
-    </SideNavItems>
-  </SideNav>
-
-  
-  
-  <Content>
-    <main>
-      <Route path="" component={Home} />
-      <Route path="/signin" component={Signin} />
-      <Route path="/signin/:username" let:params>
-        <Signin username={params.username} />
-      </Route>
-      <Route path="/signup" component={Signup} />
-    </main>
-  </Content>
+  <main class="container p-10 dark:text-white mx-auto">
+    {#if $notifications}
+    <div class="absolute top-20 right-5 w-full max-w-xs z-50 isolation">
+      {#each $notifications as nortification (nortification.id)} 
+        <Notification title={nortification.title} subtitle={nortification.subtitle} kind={nortification.kind}
+        on:close={() => destroyNotification(nortification.id)} />
+      {/each}
+    </div>
+    {/if}
+    <Route path="" component={Home} />
+    <Route path="/signin" component={Signin} />
+    <Route path="/signin/:username" let:params>
+      <Signin username={params.username} />
+    </Route>
+    <Route path="/signup" component={Signup} />
+  </main>
 </Router>
+</div>
