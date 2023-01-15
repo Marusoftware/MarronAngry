@@ -33,10 +33,23 @@ async def add_user(org_id:UUID, user_id:UUID, user:get_user=Depends()):
         raise HTTPException(status_code=400, detail="No permission to do it.")
     await OrganizationMember.create(user=await UserDB.get(id=user_id), organization=organization)
 
+@router.delete("/{org_id}/user")
+async def del_user(org_id:UUID, user_id:UUID, user:get_user=Depends()):
+    organization=await OrganizationDB.get(id=org_id)
+    if not await OrganizationMember.exists(organization=organization, user=user, is_admin=True) and user_id!=user.id:
+        raise HTTPException(status_code=400, detail="No permission to do it.")
+    await (await organization.members.filter(user=await UserDB.get(id=user_id)).first()).delete()
+
 @router.delete("/{org_id}/")
 async def delete(org_id:UUID, user:get_user=Depends()):
     organization=await OrganizationDB.get(id=org_id)
-    if not await organization.members.filter(user=user, is_admin=True).exists():
+    if not await OrganizationMember.exists(organization=organization, user=user, is_admin=True):
         raise HTTPException(status_code=400, detail="No permission to do it.")
     await organization.delete()
-    
+
+@router.put("/{org_id}/")
+async def update(org_id:UUID, user:get_user=Depends()):
+    organization=await OrganizationDB.get(id=org_id)
+    if not await OrganizationMember.exists(organization=organization, user=user, is_admin=True):
+        raise HTTPException(status_code=400, detail="No permission to do it.")
+    await organization.delete()
