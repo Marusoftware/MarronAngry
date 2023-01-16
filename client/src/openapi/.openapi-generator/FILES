@@ -6,6 +6,7 @@ index.ts
 models/HTTPValidationError.ts
 models/LocationInner.ts
 models/Member.ts
+models/OTPCreate.ts
 models/Organization.ts
 models/OrganizationCreate.ts
 models/Token.ts

@@ -5,10 +5,13 @@
     import { createEventDispatcher } from "svelte";
     export let open=true;
     const dispatch=createEventDispatcher()
-    let value="a"
+    let value=""
+    let otpRecovery=""
 
     async function onOpen() {
-        value=(await authAPI.authOtpSetup()).replaceAll('"',"")
+        const otp=await authAPI.authOtpSetup()
+        value=otp.otpUrl
+        otpRecovery=otp.otpRecovery
     }
 
     async function submit(){
@@ -20,6 +23,8 @@
 <Modal bind:open on:submit={submit} on:open={onOpen} title="One time token">
     <Heading>QRコードを認証アプリで読み取ってください。</Heading>
     <QRCodeImage text={value}/>
+    携帯電話が使用できなくなった場合に備え、以下のリカバリーキーを安全な場所に保管してください:
+    {otpRecovery}
     <svelte:fragment slot='footer'>
         <Button on:click={submit}>完了</Button>
         <Button on:click={() => open=false}>キャンセル</Button>

@@ -9,3 +9,7 @@ class UserCreate(BaseModel):
 class OrganizationCreate(BaseModel):
     name:str
     description:str
+
+class OTPCreate(BaseModel):
+    otp_url:str
+    otp_recovery:str

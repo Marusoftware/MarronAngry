@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   HTTPValidationError,
+  OTPCreate,
   Token,
   User,
   UserCreate,
@@ -23,6 +24,8 @@ import type {
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    OTPCreateFromJSON,
+    OTPCreateToJSON,
     TokenFromJSON,
     TokenToJSON,
     UserFromJSON,
@@ -105,9 +108,40 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
+     * Otpdelete
+     */
+    async authOtpDeleteRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/auth/otp/`,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Otpdelete
+     */
+    async authOtpDelete(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.authOtpDeleteRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Otpsetup
      */
-    async authOtpSetupRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async authOtpSetupRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OTPCreate>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -124,13 +158,13 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse(response, (jsonValue) => OTPCreateFromJSON(jsonValue));
     }
 
     /**
      * Otpsetup
      */
-    async authOtpSetup(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+    async authOtpSetup(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OTPCreate> {
         const response = await this.authOtpSetupRaw(initOverrides);
         return await response.value();
     }
