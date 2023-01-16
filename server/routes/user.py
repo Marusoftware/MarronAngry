@@ -9,7 +9,7 @@ from .auth.passwd import crypt
 router=APIRouter(tags=["user"])
 
 @router.get("/me", response_model=User)
-async def me(user:get_user=Depends()):
+async def me(user:UserDB=Depends(get_user)):
     return user
 
 @router.get("/{id}", response_model=UserOpen)
@@ -17,7 +17,7 @@ async def get(id:UUID):
     return await UserDB.get(id=id)
 
 @router.delete("/me")
-async def delete_me(user:get_user=Depends(), password:str=None):
+async def delete_me(user:UserDB=Depends(get_user), password:str=None):
     if user.password is not None and password is None:
         raise HTTPException(status_code=400, detail="Password is wrong")
     if user.password is not None:
@@ -26,7 +26,7 @@ async def delete_me(user:get_user=Depends(), password:str=None):
     await user.delete()
 
 @router.put("/me", response_model=User)
-async def update_me(user:UserCreate, user_db:get_user=Depends()):
+async def update_me(user:UserCreate, user_db:UserDB=Depends(get_user)):
     user=user.dict()
     user["password"]=crypt.hash(user["password"])
     await user_db.update_from_dict(user)

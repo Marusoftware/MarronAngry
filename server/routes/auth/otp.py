@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request
 from passlib.totp import TOTP, InvalidTokenError
-from ...models.db import Token as TokenDB, TokenType
+from ...models.db import Token as TokenDB, TokenType, User as UserDB
 from ...models.read.user import Token
 from ...models.write import OTPCreate
 from ...security import get_user
@@ -9,7 +9,7 @@ import secrets
 router=APIRouter()
 
 @router.put("/", response_model=OTPCreate)
-async def otpSetup(user: get_user=Depends()):
+async def otpSetup(user:UserDB =Depends(get_user)):
     totp=TOTP(new=True)
     user.otp_key=totp.base32_key
     user.otp_recovery="".join([str(secrets.choice(list(range(10)))) for i in range(6)])
@@ -37,7 +37,7 @@ async def otpAuth(request:Request, pre_token:str, token:str):
     return {"access_token": db_token.token, "token_type": "bearer", "user_id":str(user.id)}
 
 @router.delete("/")
-async def otpDelete(user: get_user=Depends()):
+async def otpDelete(user:UserDB =Depends(get_user)):
     user.otp_key=None
     user.otp_recovery=None
     await user.save()
