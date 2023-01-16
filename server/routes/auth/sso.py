@@ -19,6 +19,7 @@ class test:
 oauth.test=test()
     
 from fastapi import APIRouter, Request
+from fastapi.responses import RedirectResponse
 
 router=APIRouter()
 
@@ -27,7 +28,7 @@ async def sso_setup(request: Request, service:str):
     redirect_uri = str(config.get("SSO_REDIRECT")).replace("{service}", service)#request.url_for('auth_via_google')
     return await getattr(oauth, service).authorize_redirect(request, redirect_uri)
 
-@router.get("/{service}/callback", response_model=User)
+@router.get("/{service}/callback")
 async def sso_callback(request: Request, service:str):
     token = await getattr(oauth, service).authorize_access_token(request)
     sso_user=token["userinfo"]
@@ -36,4 +37,4 @@ async def sso_callback(request: Request, service:str):
     if "users" not in request.session:
         request.session["users"]=[]
     request.session["users"].append({"name":user.name, "id":str(user.id), "token":token.token})
-    return user
+    return RedirectResponse("/")

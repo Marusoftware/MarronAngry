@@ -170,6 +170,32 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
+     * Session
+     */
+    async authSessionRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Token>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/auth/session`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TokenFromJSON));
+    }
+
+    /**
+     * Session
+     */
+    async authSession(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Token>> {
+        const response = await this.authSessionRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Signin
      */
     async authSigninRaw(requestParameters: AuthSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Token>> {

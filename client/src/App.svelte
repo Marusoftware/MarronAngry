@@ -14,14 +14,20 @@
     DarkMode,
   } from "flowbite-svelte";
   import { Router, Route, navigate } from "svelte-routing";
-  import { destroyNotification, notifications } from "./utils";
+  import { accessToken, authAPI, destroyNotification, notifications } from "./utils";
 
   import Home from "./pages/Home.svelte";
   import Signin from "./pages/Signin.svelte";
   import Signup from "./pages/Signup.svelte";
   import Notification from "./components/Notification.svelte";
-  import Field from "./components/Field.svelte";
+  import { onMount } from "svelte";
 
+  onMount(async () => {
+    const tokens=await authAPI.authSession()
+    if(tokens.length!=0 && !$accessToken){
+      accessToken.set(tokens[0].accessToken)
+    }
+  })
 </script>
 
 <div class="bg-white dark:bg-gray-800 min-h-screen">
