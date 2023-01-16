@@ -28,6 +28,7 @@
     })
     if(token.tokenType=="bearer"){
       accessToken.set(token.accessToken)
+      navigate("/")
     } else {
       preToken=token.accessToken
       OnetimeOpen=true
@@ -35,7 +36,7 @@
   }
 </script>
 
-<Onetime bind:open={OnetimeOpen} bind:preToken />
+<Onetime bind:open={OnetimeOpen} bind:preToken on:submit={() => {navigate("/")}} />
 
 <div class="grid grid-cols-2">
   <div class="col-span-1">

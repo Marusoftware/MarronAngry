@@ -1,11 +1,13 @@
 <script lang="ts">
     import { Button, Heading, Modal } from "flowbite-svelte";
+    import { createEventDispatcher } from "svelte";
     import { form, field } from 'svelte-forms';
     import { max, required } from "svelte-forms/validators";
     import { accessToken, authAPI } from "../utils";
     import Field from "./Field.svelte";
     export let open=true;
     export let preToken:string
+    const dispatch=createEventDispatcher()
 
     const token=field("token", "", [required(), max(6)])
     const onetimeForm=form(token)
@@ -22,6 +24,7 @@
         })
         accessToken.set(token_auth.accessToken)
         open=false;
+        dispatch("submit")
     }
 </script>
 
