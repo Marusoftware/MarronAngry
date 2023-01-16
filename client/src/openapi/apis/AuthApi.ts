@@ -269,6 +269,37 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
+     * Signout
+     */
+    async authSignoutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/auth/signout`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Signout
+     */
+    async authSignout(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.authSignoutRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Signup
      */
     async authSignupRaw(requestParameters: AuthSignupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
@@ -304,7 +335,7 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * Sso Callback
      */
-    async authSsoCallbackRaw(requestParameters: AuthSsoCallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
+    async authSsoCallbackRaw(requestParameters: AuthSsoCallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         if (requestParameters.service === null || requestParameters.service === undefined) {
             throw new runtime.RequiredError('service','Required parameter requestParameters.service was null or undefined when calling authSsoCallback.');
         }
@@ -320,13 +351,13 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));
+        return new runtime.TextApiResponse(response) as any;
     }
 
     /**
      * Sso Callback
      */
-    async authSsoCallback(requestParameters: AuthSsoCallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {
+    async authSsoCallback(requestParameters: AuthSsoCallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
         const response = await this.authSsoCallbackRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -21,13 +21,18 @@
   import Signup from "./pages/Signup.svelte";
   import Notification from "./components/Notification.svelte";
   import { onMount } from "svelte";
-
+  
   onMount(async () => {
     const tokens=await authAPI.authSession()
     if(tokens.length!=0 && !$accessToken){
       accessToken.set(tokens[0].accessToken)
     }
   })
+
+  async function signout() {
+    await authAPI.authSignout()
+    accessToken.set("")
+  }
 </script>
 
 <div class="bg-white dark:bg-gray-800 min-h-screen">
@@ -37,11 +42,15 @@
     <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Marron</span>
   </NavBrand>
   <div class="flex items-center md:order-2">
-    <!-- <Avatar id="avatar-menu" src="/images/profile-picture-3.webp" /> -->
-    <Button size="sm" on:click={() => navigate("/signin")} >サインイン</Button>
+    {#if $accessToken}
+      <Avatar id="avatar-menu" src="/images/profile-picture-3.webp" />
+    {:else}
+      <Button size="sm" on:click={() => navigate("/signin")} >サインイン</Button>
+    {/if}
     <DarkMode />
     <NavHamburger on:click={toggle} class1="w-full md:flex md:w-auto md:order-1"/>
   </div>
+  {#if $accessToken}
   <Dropdown placement="bottom" triggeredBy="#avatar-menu">
     <DropdownHeader>
     <span class="block text-sm"> Bonnie Green </span>
@@ -51,11 +60,12 @@
     <DropdownItem>Settings</DropdownItem>
     <DropdownItem>Earnings</DropdownItem>
     <DropdownDivider />
-    <DropdownItem>Sign out</DropdownItem>
+    <DropdownItem on:click={signout}>Sign out</DropdownItem>
   </Dropdown>
-  <NavUl {hidden}>
-    <NavLi href="/" active={true}>Home</NavLi>
-  </NavUl>
+  {/if}
+  <!-- <NavUl {hidden}>
+    <NavLi href="/" active={true}></NavLi>
+  </NavUl> -->
 </Navbar>
 <Router>
   <main class="container p-10 dark:text-white mx-auto">

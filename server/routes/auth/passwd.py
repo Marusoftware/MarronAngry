@@ -1,6 +1,7 @@
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, Depends, HTTPException, Request
 
+from ...security import oauth, get_user
 from ...models.read.user import User, Token
 from ...models.write import UserCreate
 from ...models.db.user import User as UserDB
@@ -35,3 +36,9 @@ async def signin(request: Request, form_data: OAuth2PasswordRequestForm = Depend
 @router.post("/signup", response_model=User)
 async def signup(user:UserCreate):
     return await UserDB.create(name=user.name, fullname=user.fullname, email=user.email, password=crypt.hash(user.password), is_dev=False)
+
+@router.post("/signout")
+async def signout(request:Request, token:str =Depends(oauth)):
+    if "users" in request.session:
+        request.session["users"]=[user for user in request.session["users"] if user["token"]!=token]
+    await TokenDB.filter(token=token).delete()
