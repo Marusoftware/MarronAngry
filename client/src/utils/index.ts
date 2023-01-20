@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store';
-import { AuthApi, UserApi, Configuration } from '../openapi';
+import { AuthApi, UserApi, Configuration, OrganizationApi } from '../openapi';
 
 interface Notification {
     id?:number,
@@ -42,3 +42,4 @@ const apiConfig=new Configuration({
 
 export const authAPI = new AuthApi(apiConfig);
 export const userAPI = new UserApi(apiConfig);
+export const organizationAPI = new OrganizationApi(apiConfig);
