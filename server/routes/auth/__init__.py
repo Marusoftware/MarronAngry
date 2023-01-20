@@ -2,6 +2,7 @@ from typing import List
 from fastapi import APIRouter, Request
 
 from ...models.read.user import Token
+from ...models.db import Token as TokenDB
 
 from .otp import router as otp
 from .passwd import router as login
@@ -16,4 +17,4 @@ router.include_router(login)
 async def session(request:Request):
     if not "users" in request.session:
         return []
-    return [ Token(access_token=user["token"], token_type="bearer", user_id=user["id"]) for user in request.session["users"]]
+    return [ Token(access_token=user["token"], token_type="bearer", user_id=user["id"]) for user in request.session["users"] if await TokenDB.exists(token=user["token"])]
