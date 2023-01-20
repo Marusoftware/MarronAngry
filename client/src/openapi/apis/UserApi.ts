@@ -17,18 +17,18 @@ import * as runtime from '../runtime';
 import type {
   HTTPValidationError,
   User,
-  UserCreate,
   UserOpen,
+  UserUpdate,
 } from '../models';
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     UserFromJSON,
     UserToJSON,
-    UserCreateFromJSON,
-    UserCreateToJSON,
     UserOpenFromJSON,
     UserOpenToJSON,
+    UserUpdateFromJSON,
+    UserUpdateToJSON,
 } from '../models';
 
 export interface UserDeleteMeRequest {
@@ -40,7 +40,7 @@ export interface UserGetRequest {
 }
 
 export interface UserUpdateMeRequest {
-    userCreate: UserCreate;
+    userUpdate: UserUpdate;
 }
 
 /**
@@ -148,8 +148,8 @@ export class UserApi extends runtime.BaseAPI {
      * Update Me
      */
     async userUpdateMeRaw(requestParameters: UserUpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
-        if (requestParameters.userCreate === null || requestParameters.userCreate === undefined) {
-            throw new runtime.RequiredError('userCreate','Required parameter requestParameters.userCreate was null or undefined when calling userUpdateMe.');
+        if (requestParameters.userUpdate === null || requestParameters.userUpdate === undefined) {
+            throw new runtime.RequiredError('userUpdate','Required parameter requestParameters.userUpdate was null or undefined when calling userUpdateMe.');
         }
 
         const queryParameters: any = {};
@@ -168,7 +168,7 @@ export class UserApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: UserCreateToJSON(requestParameters.userCreate),
+            body: UserUpdateToJSON(requestParameters.userUpdate),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));

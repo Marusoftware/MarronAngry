@@ -2,7 +2,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from ..security import get_user
 from ..models.read.user import User, UserOpen
-from ..models.write import UserCreate
+from ..models.write import UserUpdate
 from ..models.db import User as UserDB
 from .auth.passwd import crypt
 
@@ -26,8 +26,19 @@ async def delete_me(user:UserDB=Depends(get_user), password:str=None):
     await user.delete()
 
 @router.put("/me", response_model=User)
-async def update_me(user:UserCreate, user_db:UserDB=Depends(get_user)):
-    user=user.dict()
-    user["password"]=crypt.hash(user["password"])
-    await user_db.update_from_dict(user)
+async def update_me(user:UserUpdate, user_db:UserDB=Depends(get_user)):
+    update_dict=user.dict()
+    if user.oldPassword is not None and user.newPassword is not None:
+        if crypt.verify(user.oldPassword, user_db.password):
+            update_dict["password"]=crypt.hash(user.newPassword)
+    def checkUpdate(item):
+        key, value=item
+        if key in ["oldPassword", "newPassword"]:
+            return False
+        elif value is None:
+            return False
+        else:
+            return True
+    update_dict=dict(filter(checkUpdate, update_dict.items()))
+    await user_db.update_from_dict(update_dict)
     return user_db

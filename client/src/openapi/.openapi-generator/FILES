@@ -13,6 +13,7 @@ models/Token.ts
 models/User.ts
 models/UserCreate.ts
 models/UserOpen.ts
+models/UserUpdate.ts
 models/ValidationError.ts
 models/index.ts
 runtime.ts

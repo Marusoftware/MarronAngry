@@ -21,6 +21,8 @@
   import Signup from "./pages/Signup.svelte";
   import Notification from "./components/Notification.svelte";
   import { onMount } from "svelte";
+  import Settings from "./pages/Settings.svelte";
+  import { user } from "./utils/store";
   
   onMount(async () => {
     const tokens=await authAPI.authSession()
@@ -53,12 +55,10 @@
   {#if $accessToken}
   <Dropdown placement="bottom" triggeredBy="#avatar-menu">
     <DropdownHeader>
-    <span class="block text-sm"> Bonnie Green </span>
-    <span class="block truncate text-sm font-medium"> name@flowbite.com </span>
+    <span class="block text-sm"> { $user.fullname }</span>
+    <span class="block truncate text-sm font-medium"> {$user.email} </span>
     </DropdownHeader>
-    <DropdownItem>Dashboard</DropdownItem>
-    <DropdownItem>Settings</DropdownItem>
-    <DropdownItem>Earnings</DropdownItem>
+    <DropdownItem on:click={()=>{navigate("/settings")}}>Settings</DropdownItem>
     <DropdownDivider />
     <DropdownItem on:click={signout}>Sign out</DropdownItem>
   </Dropdown>
@@ -83,6 +83,7 @@
       <Signin username={params.username} />
     </Route>
     <Route path="/signup" component={Signup} />
+    <Route path="/settings" component={Settings} />
   </main>
 </Router>
 </div>

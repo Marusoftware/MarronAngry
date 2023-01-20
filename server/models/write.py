@@ -6,6 +6,13 @@ class UserCreate(BaseModel):
     email:EmailStr
     password:str
 
+class UserUpdate(BaseModel):
+    name:str=None
+    fullname:str=None
+    email:EmailStr=None
+    oldPassword:str=None
+    newPassword:str=None
+
 class OrganizationCreate(BaseModel):
     name:str
     description:str

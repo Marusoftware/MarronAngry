@@ -10,4 +10,5 @@ export * from './Token';
 export * from './User';
 export * from './UserCreate';
 export * from './UserOpen';
+export * from './UserUpdate';
 export * from './ValidationError';
