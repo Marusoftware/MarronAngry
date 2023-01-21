@@ -1,5 +1,6 @@
 import { get, writable } from 'svelte/store';
-import { AuthApi, UserApi, Configuration, OrganizationApi } from '../openapi';
+import { AuthApi, UserApi, Configuration, OrganizationApi, type ErrorContext, type ResponseContext } from '../openapi';
+import type { Middleware } from '../openapi';
 
 interface Notification {
     id?:number,
@@ -35,9 +36,29 @@ async function getAccessToken(){
     return "Bearer "+get(accessToken)
 }
 
+class APIExceptionHandlerMiddleware implements Middleware{
+    async post(context: ResponseContext): Promise<void | Response> {
+        try {
+            const json=await context.response.json()
+            if (json.detail) {
+                showNotification({
+                    kind:"warn",
+                    title:json.detail,
+                    subtitle: json.description??""
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
+
 const apiConfig=new Configuration({
     basePath: "/api/v1",
-    accessToken: getAccessToken
+    accessToken: getAccessToken,
+    middleware:[
+        new APIExceptionHandlerMiddleware
+    ]
 })
 
 export const authAPI = new AuthApi(apiConfig);
