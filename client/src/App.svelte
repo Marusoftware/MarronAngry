@@ -12,9 +12,10 @@
     DropdownDivider,
     Button,
     DarkMode,
+    Chevron
   } from "flowbite-svelte";
   import { Router, Route, navigate } from "svelte-routing";
-  import { accessToken, authAPI, destroyNotification, notifications } from "./utils";
+  import { accessToken, authAPI, destroyNotification, notifications, userAPI } from "./utils";
 
   import Home from "./pages/Home.svelte";
   import Signin from "./pages/Signin.svelte";
@@ -23,9 +24,10 @@
   import { onMount } from "svelte";
   import Settings from "./pages/Settings.svelte";
   import { user } from "./utils/store";
-  
+    import type { Token } from "./openapi";
+  let tokens:Token[]
   onMount(async () => {
-    const tokens=await authAPI.authSession()
+    tokens=await authAPI.authSession()
     if(tokens.length!=0 && !$accessToken){
       accessToken.set(tokens[0].accessToken)
     }
@@ -33,7 +35,16 @@
 
   async function signout() {
     await authAPI.authSignout()
-    accessToken.set("")
+    tokens=await authAPI.authSession()
+    if(tokens.length!=0 && !$accessToken){
+      accessToken.set(tokens[0].accessToken)
+    } else {
+      accessToken.set("")
+    }
+  }
+
+  async function changeUser(token:string){
+    accessToken.set(token)
   }
 </script>
 
@@ -60,6 +71,18 @@
     </DropdownHeader>
     <DropdownItem on:click={()=>{navigate("/settings")}}>Settings</DropdownItem>
     <DropdownDivider />
+    <DropdownItem class="flex items-center justify-between"><Chevron placement="right">Switch Account</Chevron></DropdownItem>
+    <Dropdown placement="left-start">
+      {#each tokens as token (token.accessToken)}
+        {#await userAPI.userGet({id:token.userId})}
+        <DropdownItem>Getting user info...</DropdownItem>
+        {:then user}
+        <DropdownItem on:click={()=>{changeUser(token.accessToken)}}>
+          <Avatar src="/images/profile-picture-3.webp" size="xs" />{user.name}
+        </DropdownItem>
+        {/await}
+      {/each}
+    </Dropdown>
     <DropdownItem on:click={signout}>Sign out</DropdownItem>
   </Dropdown>
   {/if}
