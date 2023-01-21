@@ -82,6 +82,7 @@
         </DropdownItem>
         {/await}
       {/each}
+      <DropdownItem on:click={() => navigate("/signin")}>+ Add user</DropdownItem>
     </Dropdown>
     <DropdownItem on:click={signout}>Sign out</DropdownItem>
   </Dropdown>
