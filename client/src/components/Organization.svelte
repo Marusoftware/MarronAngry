@@ -42,6 +42,7 @@
             })
         }
         dispatch("close", organization)
+        open=false
     }
 
 </script>
