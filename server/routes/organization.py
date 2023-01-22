@@ -52,6 +52,6 @@ async def update(organization:OrganizationUpdate, org_id:UUID, user:UserDB=Depen
     org=await OrganizationDB.get(id=org_id)
     if not await OrganizationMember.exists(organization=org, user=user, is_admin=True):
         raise HTTPException(status_code=400, detail="No permission to do it.")
-    org.update_from_dict(organization.dict())
+    org.update_from_dict(organization.dict(exclude_none=True))
     await org.save()
     return Organization(id=org.id, name=org.name, description=org.description, members=await OrganizationMember.filter(organization=org))

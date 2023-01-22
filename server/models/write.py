@@ -18,8 +18,8 @@ class OrganizationCreate(BaseModel):
     description:str
 
 class OrganizationUpdate(BaseModel):
-    name:str
-    description:str
+    name:str=None
+    description:str=None
 
 class OTPCreate(BaseModel):
     otp_url:str
