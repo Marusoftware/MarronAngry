@@ -24,13 +24,13 @@ export interface OrganizationUpdate {
      * @type {string}
      * @memberof OrganizationUpdate
      */
-    name: string;
+    name?: string;
     /**
      * 
      * @type {string}
      * @memberof OrganizationUpdate
      */
-    description: string;
+    description?: string;
 }
 
 /**
@@ -38,8 +38,6 @@ export interface OrganizationUpdate {
  */
 export function instanceOfOrganizationUpdate(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "name" in value;
-    isInstance = isInstance && "description" in value;
 
     return isInstance;
 }
@@ -54,8 +52,8 @@ export function OrganizationUpdateFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'name': json['name'],
-        'description': json['description'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
+        'description': !exists(json, 'description') ? undefined : json['description'],
     };
 }
 

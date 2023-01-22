@@ -26,12 +26,12 @@ async def get_us(user:UserDB=Depends(get_user)):
         ]))
     return orgs
 
-@router.put("/{org_id}/user")
+@router.put("/{org_id}/user", response_model=Member)
 async def add_user(org_id:UUID, user_id:UUID, user:UserDB=Depends(get_user)):
     organization=await OrganizationDB.get(id=org_id)
     if not await organization.members.filter(user=user, is_admin=True).exists():
         raise HTTPException(status_code=400, detail="No permission to do it.")
-    await OrganizationMember.create(user=await UserDB.get(id=user_id), organization=organization)
+    return await OrganizationMember.create(user=await UserDB.get(id=user_id), organization=organization)
 
 @router.delete("/{org_id}/user")
 async def del_user(org_id:UUID, user_id:UUID, user:UserDB=Depends(get_user)):

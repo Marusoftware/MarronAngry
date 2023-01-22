@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   HTTPValidationError,
+  Member,
   Organization,
   OrganizationCreate,
   OrganizationUpdate,
@@ -23,6 +24,8 @@ import type {
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    MemberFromJSON,
+    MemberToJSON,
     OrganizationFromJSON,
     OrganizationToJSON,
     OrganizationCreateFromJSON,
@@ -62,7 +65,7 @@ export class OrganizationApi extends runtime.BaseAPI {
     /**
      * Add User
      */
-    async organizationAddUserRaw(requestParameters: OrganizationAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async organizationAddUserRaw(requestParameters: OrganizationAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Member>> {
         if (requestParameters.orgId === null || requestParameters.orgId === undefined) {
             throw new runtime.RequiredError('orgId','Required parameter requestParameters.orgId was null or undefined when calling organizationAddUser.');
         }
@@ -91,13 +94,13 @@ export class OrganizationApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse(response, (jsonValue) => MemberFromJSON(jsonValue));
     }
 
     /**
      * Add User
      */
-    async organizationAddUser(requestParameters: OrganizationAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+    async organizationAddUser(requestParameters: OrganizationAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Member> {
         const response = await this.organizationAddUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
