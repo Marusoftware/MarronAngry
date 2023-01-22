@@ -86,7 +86,7 @@ export class OrganizationApi extends runtime.BaseAPI {
 
         const response = await this.request({
             path: `/organization/{org_id}/user`.replace(`{${"org_id"}}`, encodeURIComponent(String(requestParameters.orgId))),
-            method: 'POST',
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
@@ -274,7 +274,7 @@ export class OrganizationApi extends runtime.BaseAPI {
 
         const response = await this.request({
             path: `/organization/{org_id}/`.replace(`{${"org_id"}}`, encodeURIComponent(String(requestParameters.orgId))),
-            method: 'PUT',
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
             body: OrganizationUpdateToJSON(requestParameters.organizationUpdate),

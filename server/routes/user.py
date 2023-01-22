@@ -25,7 +25,7 @@ async def delete_me(user:UserDB=Depends(get_user), password:str=None):
             raise HTTPException(status_code=400, detail="Password is wrong")
     await user.delete()
 
-@router.put("/me", response_model=User)
+@router.patch("/me", response_model=User)
 async def update_me(user:UserUpdate, user_db:UserDB=Depends(get_user)):
     update_dict=user.dict()
     if user.oldPassword is not None and user.newPassword is not None:

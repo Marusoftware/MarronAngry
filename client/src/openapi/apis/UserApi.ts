@@ -165,7 +165,7 @@ export class UserApi extends runtime.BaseAPI {
 
         const response = await this.request({
             path: `/user/me`,
-            method: 'PUT',
+            method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
             body: UserUpdateToJSON(requestParameters.userUpdate),

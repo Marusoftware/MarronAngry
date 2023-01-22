@@ -26,7 +26,7 @@ async def get_us(user:UserDB=Depends(get_user)):
         ]))
     return orgs
 
-@router.post("/{org_id}/user")
+@router.put("/{org_id}/user")
 async def add_user(org_id:UUID, user_id:UUID, user:UserDB=Depends(get_user)):
     organization=await OrganizationDB.get(id=org_id)
     if not await organization.members.filter(user=user, is_admin=True).exists():
@@ -47,7 +47,7 @@ async def delete(org_id:UUID, user:UserDB=Depends(get_user)):
         raise HTTPException(status_code=400, detail="No permission to do it.")
     await organization.delete()
 
-@router.put("/{org_id}/", response_model=Organization)
+@router.patch("/{org_id}/", response_model=Organization)
 async def update(organization:OrganizationUpdate, org_id:UUID, user:UserDB=Depends(get_user)):
     org=await OrganizationDB.get(id=org_id)
     if not await OrganizationMember.exists(organization=org, user=user, is_admin=True):
