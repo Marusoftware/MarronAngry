@@ -40,5 +40,6 @@ async def update_me(user:UserUpdate, user_db:UserDB=Depends(get_user)):
         else:
             return True
     update_dict=dict(filter(checkUpdate, update_dict.items()))
-    await user_db.update_from_dict(update_dict)
+    user_db.update_from_dict(update_dict)
+    await user_db.save()
     return user_db
