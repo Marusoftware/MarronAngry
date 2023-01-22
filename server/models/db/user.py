@@ -1,4 +1,4 @@
-from tortoise.fields import UUIDField, CharField, BooleanField, ReverseRelation, ForeignKeyField
+from tortoise.fields import UUIDField, CharField, BooleanField, ReverseRelation, ForeignKeyField, ForeignKeyRelation
 from tortoise.models import Model
 from tortoise import fields
 
@@ -23,9 +23,9 @@ class Organization(Model):
 
 class OrganizationMember(Model):
     id=UUIDField(pk=True, description="Organization Member ID")
-    user=ForeignKeyField("models.User", related_name="members", on_delete=fields.CASCADE)
+    user:ForeignKeyRelation[User]=ForeignKeyField("models.User", related_name="members", on_delete=fields.CASCADE)
     is_admin=BooleanField(default=False, description="Is this Org member admin?")
-    organization=ForeignKeyField("models.Organization", related_name="members", on_delete=fields.CASCADE)
+    organization:ForeignKeyRelation[Organization]=ForeignKeyField("models.Organization", related_name="members", on_delete=fields.CASCADE)
 
 from .auth import Token
 from .task import Project
