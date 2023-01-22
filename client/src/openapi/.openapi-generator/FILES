@@ -9,6 +9,7 @@ models/Member.ts
 models/OTPCreate.ts
 models/Organization.ts
 models/OrganizationCreate.ts
+models/OrganizationUpdate.ts
 models/Token.ts
 models/User.ts
 models/UserCreate.ts

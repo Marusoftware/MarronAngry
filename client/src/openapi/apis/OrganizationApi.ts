@@ -18,6 +18,7 @@ import type {
   HTTPValidationError,
   Organization,
   OrganizationCreate,
+  OrganizationUpdate,
 } from '../models';
 import {
     HTTPValidationErrorFromJSON,
@@ -26,6 +27,8 @@ import {
     OrganizationToJSON,
     OrganizationCreateFromJSON,
     OrganizationCreateToJSON,
+    OrganizationUpdateFromJSON,
+    OrganizationUpdateToJSON,
 } from '../models';
 
 export interface OrganizationAddUserRequest {
@@ -48,6 +51,7 @@ export interface OrganizationDeleteRequest {
 
 export interface OrganizationUpdateRequest {
     orgId: string;
+    organizationUpdate: OrganizationUpdate;
 }
 
 /**
@@ -248,14 +252,20 @@ export class OrganizationApi extends runtime.BaseAPI {
     /**
      * Update
      */
-    async organizationUpdateRaw(requestParameters: OrganizationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async organizationUpdateRaw(requestParameters: OrganizationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Organization>> {
         if (requestParameters.orgId === null || requestParameters.orgId === undefined) {
             throw new runtime.RequiredError('orgId','Required parameter requestParameters.orgId was null or undefined when calling organizationUpdate.');
+        }
+
+        if (requestParameters.organizationUpdate === null || requestParameters.organizationUpdate === undefined) {
+            throw new runtime.RequiredError('organizationUpdate','Required parameter requestParameters.organizationUpdate was null or undefined when calling organizationUpdate.');
         }
 
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -267,15 +277,16 @@ export class OrganizationApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
+            body: OrganizationUpdateToJSON(requestParameters.organizationUpdate),
         }, initOverrides);
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse(response, (jsonValue) => OrganizationFromJSON(jsonValue));
     }
 
     /**
      * Update
      */
-    async organizationUpdate(requestParameters: OrganizationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+    async organizationUpdate(requestParameters: OrganizationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Organization> {
         const response = await this.organizationUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }

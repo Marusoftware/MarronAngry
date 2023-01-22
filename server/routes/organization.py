@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..security import get_user
-from ..models.write import OrganizationCreate
+from ..models.write import OrganizationCreate, OrganizationUpdate
 from ..models.db import Organization as OrganizationDB, OrganizationMember, User as UserDB
 from ..models.read.user import Organization, Member
 
@@ -47,9 +47,11 @@ async def delete(org_id:UUID, user:UserDB=Depends(get_user)):
         raise HTTPException(status_code=400, detail="No permission to do it.")
     await organization.delete()
 
-@router.put("/{org_id}/")
-async def update(org_id:UUID, user:UserDB=Depends(get_user)):
-    organization=await OrganizationDB.get(id=org_id)
-    if not await OrganizationMember.exists(organization=organization, user=user, is_admin=True):
+@router.put("/{org_id}/", response_model=Organization)
+async def update(organization:OrganizationUpdate, org_id:UUID, user:UserDB=Depends(get_user)):
+    org=await OrganizationDB.get(id=org_id)
+    if not await OrganizationMember.exists(organization=org, user=user, is_admin=True):
         raise HTTPException(status_code=400, detail="No permission to do it.")
-    await organization.delete()
+    org.update_from_dict(organization.dict())
+    await org.save()
+    return Organization(id=org.id, name=org.name, description=org.description, members=await OrganizationMember.filter(organization=org))

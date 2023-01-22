@@ -17,6 +17,10 @@ class OrganizationCreate(BaseModel):
     name:str
     description:str
 
+class OrganizationUpdate(BaseModel):
+    name:str
+    description:str
+
 class OTPCreate(BaseModel):
     otp_url:str
     otp_recovery:str

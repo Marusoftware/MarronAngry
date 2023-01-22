@@ -24,7 +24,8 @@
   import { onMount } from "svelte";
   import Settings from "./pages/Settings.svelte";
   import { user } from "./utils/store";
-    import type { Token } from "./openapi";
+  import type { Token } from "./openapi";
+  import Organization from "./pages/Organization.svelte";
   let tokens:Token[]
   onMount(async () => {
     tokens=await authAPI.authSession()
@@ -87,9 +88,9 @@
     <DropdownItem on:click={signout}>Sign out</DropdownItem>
   </Dropdown>
   {/if}
-  <!-- <NavUl {hidden}>
-    <NavLi href="/" active={true}></NavLi>
-  </NavUl> -->
+  <NavUl {hidden}>
+    <NavLi href="#" on:click={() => navigate("/organization")}>Organization</NavLi>
+  </NavUl>
 </Navbar>
 <Router>
   <main class="container p-10 dark:text-white mx-auto">
@@ -108,6 +109,7 @@
     </Route>
     <Route path="/signup" component={Signup} />
     <Route path="/settings" component={Settings} />
+    <Route path="/organization" component={Organization} />
   </main>
 </Router>
 </div>
