@@ -1,5 +1,6 @@
 apis/AuthApi.ts
 apis/OrganizationApi.ts
+apis/ProjectApi.ts
 apis/UserApi.ts
 apis/index.ts
 index.ts
@@ -10,6 +11,9 @@ models/OTPCreate.ts
 models/Organization.ts
 models/OrganizationCreate.ts
 models/OrganizationUpdate.ts
+models/Project.ts
+models/ProjectCreate.ts
+models/ProjectUpdate.ts
 models/Token.ts
 models/User.ts
 models/UserCreate.ts

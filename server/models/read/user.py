@@ -29,3 +29,9 @@ class Organization(BaseModel):
     name:str
     description:str
     members:List[Member]
+
+class Project(BaseModel):
+    id:UUID
+    name:str
+    description:str
+    organization_id:str

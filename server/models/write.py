@@ -24,3 +24,11 @@ class OrganizationUpdate(BaseModel):
 class OTPCreate(BaseModel):
     otp_url:str
     otp_recovery:str
+
+class ProjectCreate(BaseModel):
+    name:str
+    description:str
+    organization_id:str
+
+class ProjectUpdate(ProjectCreate):
+    pass
