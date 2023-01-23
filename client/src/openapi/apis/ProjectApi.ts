@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   HTTPValidationError,
+  Member,
   Project,
   ProjectCreate,
   ProjectUpdate,
@@ -23,6 +24,8 @@ import type {
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    MemberFromJSON,
+    MemberToJSON,
     ProjectFromJSON,
     ProjectToJSON,
     ProjectCreateFromJSON,
@@ -31,8 +34,18 @@ import {
     ProjectUpdateToJSON,
 } from '../models';
 
+export interface ProjectAddUserRequest {
+    projId: string;
+    userId: string;
+}
+
 export interface ProjectCreateRequest {
     projectCreate: ProjectCreate;
+}
+
+export interface ProjectDelUserRequest {
+    projId: string;
+    userId: string;
 }
 
 export interface ProjectDeleteRequest {
@@ -52,6 +65,49 @@ export interface ProjectUpdateRequest {
  * 
  */
 export class ProjectApi extends runtime.BaseAPI {
+
+    /**
+     * Add User
+     */
+    async projectAddUserRaw(requestParameters: ProjectAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Member>> {
+        if (requestParameters.projId === null || requestParameters.projId === undefined) {
+            throw new runtime.RequiredError('projId','Required parameter requestParameters.projId was null or undefined when calling projectAddUser.');
+        }
+
+        if (requestParameters.userId === null || requestParameters.userId === undefined) {
+            throw new runtime.RequiredError('userId','Required parameter requestParameters.userId was null or undefined when calling projectAddUser.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.userId !== undefined) {
+            queryParameters['user_id'] = requestParameters.userId;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/project/{proj_id}/user`.replace(`{${"proj_id"}}`, encodeURIComponent(String(requestParameters.projId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MemberFromJSON(jsonValue));
+    }
+
+    /**
+     * Add User
+     */
+    async projectAddUser(requestParameters: ProjectAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Member> {
+        const response = await this.projectAddUserRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Create
@@ -88,6 +144,49 @@ export class ProjectApi extends runtime.BaseAPI {
      */
     async projectCreate(requestParameters: ProjectCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Project> {
         const response = await this.projectCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Del User
+     */
+    async projectDelUserRaw(requestParameters: ProjectDelUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.projId === null || requestParameters.projId === undefined) {
+            throw new runtime.RequiredError('projId','Required parameter requestParameters.projId was null or undefined when calling projectDelUser.');
+        }
+
+        if (requestParameters.userId === null || requestParameters.userId === undefined) {
+            throw new runtime.RequiredError('userId','Required parameter requestParameters.userId was null or undefined when calling projectDelUser.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.userId !== undefined) {
+            queryParameters['user_id'] = requestParameters.userId;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/project/{proj_id}/user`.replace(`{${"proj_id"}}`, encodeURIComponent(String(requestParameters.projId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Del User
+     */
+    async projectDelUser(requestParameters: ProjectDelUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.projectDelUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

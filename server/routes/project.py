@@ -27,6 +27,24 @@ async def create(project:ProjectCreate, user:User=Depends(get_user)):
     await project_db.members.add(member)
     return {**dict(project_db), "organization_id":project.organization_id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=user.id)]}
 
+@router.put("/{proj_id}/user", response_model=Member)
+async def add_user(proj_id:UUID, user_id:UUID, user:User=Depends(get_user)):
+    proj=await ProjectDB.get(id=proj_id).prefetch_related("organization")
+    if not await OrganizationMember.exists(organization=proj.organization, user=user, is_admin=True) and user_id!=user.id:
+        raise HTTPException(status_code=400, detail="No permission to do it.")
+    member=await OrganizationMember.get(user=await User.get(id=user_id), organization=proj.organization)
+    await proj.members.add(member)
+    return member
+
+@router.delete("/{proj_id}/user")
+async def del_user(proj_id:UUID, user_id:UUID, user:User=Depends(get_user)):
+    proj=await ProjectDB.get(id=proj_id).prefetch_related("organization")
+    if not await OrganizationMember.exists(organization=proj.organization, user=user, is_admin=True) and user_id!=user.id:
+        raise HTTPException(status_code=400, detail="No permission to do it.")
+    member=await OrganizationMember.get(user=await User.get(id=user_id), organization=proj.organization)
+    await proj.members.remove(member)
+    return member
+
 @router.patch("/{proj_id}", response_model=Project)
 async def update(proj_id:UUID, project:ProjectUpdate, user:User=Depends(get_user)):
     org=await Organization.get(id=project.organization_id)
