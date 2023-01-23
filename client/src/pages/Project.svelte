@@ -15,7 +15,7 @@
     import { onMount } from "svelte";
     import { organizations } from "../utils/store";
     let open = false;
-    let projectModal:ProjectModel={id:"", name:"", description:"", organizationId:""}
+    let projectModal:ProjectModel={id:"", name:"", description:"", organizationId:"", members:[]}
     let projects:ProjectModel[]=[]
   
     async function updateTable() {
@@ -34,7 +34,7 @@
     <Heading tag="h2">Your Projects</Heading>
     <Button
       on:click={() => {
-        projectModal = {id:"", name:"",description:"", organizationId:""};
+        projectModal = {id:"", name:"",description:"", organizationId:"", members:[]};
         open = true;
       }}>Add Project</Button
     ><br />

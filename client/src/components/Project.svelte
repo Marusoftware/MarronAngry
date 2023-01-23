@@ -9,7 +9,7 @@
     import Field from "./Field.svelte";
     const dispatch=createEventDispatcher()
 
-    export let project:Project={id:"", name:"",description:"", organizationId:""};
+    export let project:Project={id:"", name:"",description:"", organizationId:"", members:[]};
     const name = field('name', "", [required()])
     const description = field('description', "", [required()])
     const updateForm = form(name, description)
