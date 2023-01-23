@@ -3,7 +3,6 @@
     import { createEventDispatcher } from "svelte";
     import { field, form } from "svelte-forms";
     import { pattern, required } from "svelte-forms/validators";
-    import { identity } from "svelte/internal";
     import type { Organization } from "../openapi";
     import { organizationAPI, userAPI } from "../utils";
     import Field from "./Field.svelte";

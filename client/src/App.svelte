@@ -12,7 +12,8 @@
     DropdownDivider,
     Button,
     DarkMode,
-    Chevron
+    Chevron,
+    Radio
   } from "flowbite-svelte";
   import { Router, Route, navigate } from "svelte-routing";
   import { accessToken, authAPI, destroyNotification, notifications, userAPI } from "./utils";
@@ -23,7 +24,7 @@
   import Notification from "./components/Notification.svelte";
   import { onMount } from "svelte";
   import Settings from "./pages/Settings.svelte";
-  import { user } from "./utils/store";
+  import { organizations, user } from "./utils/store";
   import type { Token } from "./openapi";
   import Organization from "./pages/Organization.svelte";
   let tokens:Token[]
@@ -47,6 +48,13 @@
   async function changeUser(token:string){
     accessToken.set(token)
   }
+
+  let organization:number=0
+  function updateOrganizations(select:number) {
+    $organizations=[$organizations[select], ...$organizations.filter((value, index)=>index!==select)]
+    organization=0
+  }
+  $: updateOrganizations(organization)
 </script>
 
 <div class="bg-white dark:bg-gray-800 min-h-screen">
@@ -89,7 +97,17 @@
   </Dropdown>
   {/if}
   <NavUl {hidden}>
-    <NavLi href="#" on:click={() => navigate("/organization")}>Organization</NavLi>
+    <NavLi id="organization" href="#" on:click={() => navigate("/organization")}>Organization</NavLi>
+    {#if $organizations}
+      <Dropdown  placement="bottom" triggeredBy="#organization">
+        {#each $organizations as org, i(org.id)}
+          <li>
+            <Radio name="organization-select" bind:group={organization} value={i}>{org.name}</Radio>
+          </li>
+        {/each}
+      </Dropdown>
+    {/if}
+    
   </NavUl>
 </Navbar>
 <Router>

@@ -11,14 +11,13 @@
   } from "flowbite-svelte";
   import Organization from "../components/Organization.svelte";
   import { accessToken, organizationAPI } from "../utils";
-  import type {Organization as OrganizationModel} from "../openapi"
+  import { organizations } from "../utils/store";
     import { onMount } from "svelte";
   let organizationModal = {id:"", name:"",description:"", members:[]};
   let open = false;
-  let organizations:OrganizationModel[]=[]
 
   async function updateTable() {
-    organizations=await organizationAPI.organizationGetUs()
+    organizations.set(await organizationAPI.organizationGetUs())
   }
 
   onMount(async () => {
@@ -44,7 +43,7 @@
       <TableHeadCell />
     </TableHead>
     <TableBody>
-      {#each organizations as organization}
+      {#each $organizations as organization (organization.id)}
         <TableBodyRow>
           <TableBodyCell>{organization.name}</TableBodyCell>
           <TableBodyCell>{organization.description}</TableBodyCell>
