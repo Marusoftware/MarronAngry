@@ -20,7 +20,8 @@
         }
     })
 
-    function changeVisible(){
+    function changeVisible(e:Event){
+        e.preventDefault()
         if(type=="password"){
             type="text"
         } else {
