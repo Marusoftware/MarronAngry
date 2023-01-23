@@ -1,6 +1,7 @@
 from typing import List
 from pydantic import BaseModel, EmailStr
 from uuid import UUID
+from datetime import datetime 
 
 class Token(BaseModel):
     access_token: str
@@ -35,4 +36,12 @@ class Project(BaseModel):
     name:str
     description:str
     organization_id:UUID
+    members:List[Member]
+
+class Task(BaseModel):
+    id:UUID
+    name:str
+    description:str
+    project_id:UUID
+    time:datetime
     members:List[Member]

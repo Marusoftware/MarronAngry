@@ -1,5 +1,6 @@
 from uuid import UUID
 from pydantic import BaseModel, EmailStr
+from datetime import datetime
 
 class UserCreate(BaseModel):
     name:str
@@ -35,3 +36,15 @@ class ProjectUpdate(ProjectCreate):
     name:str=None
     description:str=None
     organization_id:UUID=None
+
+class TaskCreate(BaseModel):
+    name:str
+    description:str
+    time:datetime
+    project_id:UUID
+
+class TaskUpdate(TaskCreate):
+    name:str=None
+    description:str=None
+    time:datetime=None
+    project_id:UUID=None
