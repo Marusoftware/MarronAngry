@@ -168,7 +168,7 @@ export class ProjectApi extends runtime.BaseAPI {
     /**
      * Update
      */
-    async projectUpdateRaw(requestParameters: ProjectUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async projectUpdateRaw(requestParameters: ProjectUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Project>> {
         if (requestParameters.projId === null || requestParameters.projId === undefined) {
             throw new runtime.RequiredError('projId','Required parameter requestParameters.projId was null or undefined when calling projectUpdate.');
         }
@@ -196,13 +196,13 @@ export class ProjectApi extends runtime.BaseAPI {
             body: ProjectUpdateToJSON(requestParameters.projectUpdate),
         }, initOverrides);
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse(response, (jsonValue) => ProjectFromJSON(jsonValue));
     }
 
     /**
      * Update
      */
-    async projectUpdate(requestParameters: ProjectUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+    async projectUpdate(requestParameters: ProjectUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Project> {
         const response = await this.projectUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }

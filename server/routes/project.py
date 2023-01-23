@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends
 
 from ..security import get_user
 
-from ..models.read.user import Project
+from ..models.read.user import Project, Member
 from ..models.db import Project as ProjectDB, Organization, OrganizationMember, User
 from ..models.write import ProjectCreate, ProjectUpdate
 
@@ -15,24 +15,27 @@ async def get(org_id:UUID, user:User=Depends(get_user)):
     org=await Organization.get(id=org_id)
     if not await OrganizationMember.exists(organization=org, user=user):
         raise HTTPException(status_code=400, detail="No permission to do it.")
-    return [{"id":project.id, "name":project.name, "description":project.description, "organization_id":org_id} for project in  await ProjectDB.filter(organization=org)]
+    return [{"id":project.id, "name":project.name, "description":project.description, "organization_id":org_id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=member.user.id) for member in project.members]} for project in  await ProjectDB.filter(organization=org).prefetch_related("members__user")]
 
 @router.post("/", response_model=Project)
 async def create(project:ProjectCreate, user:User=Depends(get_user)):
     org=await Organization.get(id=project.organization_id)
-    if not await OrganizationMember.exists(organization=org, user=user, is_admin=True):
+    member=await OrganizationMember.get_or_none(organization=org, user=user, is_admin=True)
+    if member is None:
         raise HTTPException(status_code=400, detail="No permission to do it.")
-    return {**dict(await ProjectDB.create(name=project.name, description=project.description, organization=await Organization.get(id=project.organization_id))), "organization_id":project.organization_id}
+    project_db=await ProjectDB.create(name=project.name, description=project.description, organization=org)
+    await project_db.members.add(member)
+    return {**dict(project_db), "organization_id":project.organization_id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=user.id)]}
 
-@router.patch("/{proj_id}")
+@router.patch("/{proj_id}", response_model=Project)
 async def update(proj_id:UUID, project:ProjectUpdate, user:User=Depends(get_user)):
     org=await Organization.get(id=project.organization_id)
     if not await OrganizationMember.exists(organization=org, user=user, is_admin=True):
         raise HTTPException(status_code=400, detail="No permission to do it.")
-    proj=await ProjectDB.get(id=proj_id)
+    proj=await ProjectDB.get(id=proj_id).prefetch_related("members__user")
     proj.update_from_dict(project.dict(exclude_none=True))
     await proj.save()
-    return proj
+    return {**dict(proj), "organization_id":project.organization_id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=member.user.id) for member in proj.members]}
 
 @router.delete("/{proj_id}")
 async def delete(proj_id:UUID, user:User=Depends(get_user)):

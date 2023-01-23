@@ -1,4 +1,4 @@
-from tortoise.fields import UUIDField, CharField, BooleanField, ReverseRelation, ForeignKeyField, ForeignKeyRelation
+from tortoise.fields import UUIDField, CharField, BooleanField, ReverseRelation, ForeignKeyField, ForeignKeyRelation, ManyToManyRelation
 from tortoise.models import Model
 from tortoise import fields
 
@@ -26,6 +26,8 @@ class OrganizationMember(Model):
     user:ForeignKeyRelation[User]=ForeignKeyField("models.User", related_name="members", on_delete=fields.CASCADE)
     is_admin=BooleanField(default=False, description="Is this Org member admin?")
     organization:ForeignKeyRelation[Organization]=ForeignKeyField("models.Organization", related_name="members", on_delete=fields.CASCADE)
+    projects:ManyToManyRelation["Project"]
+    tasks:ManyToManyRelation["Task"]
 
 from .auth import Token
-from .task import Project
+from .task import Project, Task

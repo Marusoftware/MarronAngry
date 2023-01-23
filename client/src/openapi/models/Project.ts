@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { Member } from './Member';
+import {
+    MemberFromJSON,
+    MemberFromJSONTyped,
+    MemberToJSON,
+} from './Member';
+
 /**
  * 
  * @export
@@ -43,6 +50,12 @@ export interface Project {
      * @memberof Project
      */
     organizationId: string;
+    /**
+     * 
+     * @type {Array<Member>}
+     * @memberof Project
+     */
+    members: Array<Member>;
 }
 
 /**
@@ -54,6 +67,7 @@ export function instanceOfProject(value: object): boolean {
     isInstance = isInstance && "name" in value;
     isInstance = isInstance && "description" in value;
     isInstance = isInstance && "organizationId" in value;
+    isInstance = isInstance && "members" in value;
 
     return isInstance;
 }
@@ -72,6 +86,7 @@ export function ProjectFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         'name': json['name'],
         'description': json['description'],
         'organizationId': json['organization_id'],
+        'members': ((json['members'] as Array<any>).map(MemberFromJSON)),
     };
 }
 
@@ -88,6 +103,7 @@ export function ProjectToJSON(value?: Project | null): any {
         'name': value.name,
         'description': value.description,
         'organization_id': value.organizationId,
+        'members': ((value.members as Array<any>).map(MemberToJSON)),
     };
 }
 

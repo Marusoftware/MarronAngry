@@ -24,19 +24,19 @@ export interface ProjectUpdate {
      * @type {string}
      * @memberof ProjectUpdate
      */
-    name: string;
+    name?: string;
     /**
      * 
      * @type {string}
      * @memberof ProjectUpdate
      */
-    description: string;
+    description?: string;
     /**
      * 
      * @type {string}
      * @memberof ProjectUpdate
      */
-    organizationId: string;
+    organizationId?: string;
 }
 
 /**
@@ -44,9 +44,6 @@ export interface ProjectUpdate {
  */
 export function instanceOfProjectUpdate(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "name" in value;
-    isInstance = isInstance && "description" in value;
-    isInstance = isInstance && "organizationId" in value;
 
     return isInstance;
 }
@@ -61,9 +58,9 @@ export function ProjectUpdateFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'name': json['name'],
-        'description': json['description'],
-        'organizationId': json['organization_id'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
+        'description': !exists(json, 'description') ? undefined : json['description'],
+        'organizationId': !exists(json, 'organization_id') ? undefined : json['organization_id'],
     };
 }
 

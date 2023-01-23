@@ -35,3 +35,4 @@ class Project(BaseModel):
     name:str
     description:str
     organization_id:UUID
+    members:List[Member]

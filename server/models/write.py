@@ -32,4 +32,6 @@ class ProjectCreate(BaseModel):
     organization_id:UUID
 
 class ProjectUpdate(ProjectCreate):
-    pass
+    name:str=None
+    description:str=None
+    organization_id:UUID=None
