@@ -34,4 +34,4 @@ class Project(BaseModel):
     id:UUID
     name:str
     description:str
-    organization_id:str
+    organization_id:UUID

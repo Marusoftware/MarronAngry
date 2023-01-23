@@ -27,6 +27,7 @@
   import { organizations, user } from "./utils/store";
   import type { Token } from "./openapi";
   import Organization from "./pages/Organization.svelte";
+    import Project from "./pages/Project.svelte";
   let tokens:Token[]
   onMount(async () => {
     tokens=await authAPI.authSession()
@@ -107,7 +108,7 @@
         {/each}
       </Dropdown>
     {/if}
-    
+    <NavLi href="#" on:click={() => navigate("/project")}>Project</NavLi>
   </NavUl>
 </Navbar>
 <Router>
@@ -128,6 +129,7 @@
     <Route path="/signup" component={Signup} />
     <Route path="/settings" component={Settings} />
     <Route path="/organization" component={Organization} />
+    <Route path="/project" component={Project} />
   </main>
 </Router>
 </div>

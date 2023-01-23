@@ -1,3 +1,4 @@
+from uuid import UUID
 from pydantic import BaseModel, EmailStr
 
 class UserCreate(BaseModel):
@@ -28,7 +29,7 @@ class OTPCreate(BaseModel):
 class ProjectCreate(BaseModel):
     name:str
     description:str
-    organization_id:str
+    organization_id:UUID
 
 class ProjectUpdate(ProjectCreate):
     pass

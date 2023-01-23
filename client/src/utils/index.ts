@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store';
-import { AuthApi, UserApi, Configuration, OrganizationApi, type ErrorContext, type ResponseContext } from '../openapi';
+import { AuthApi, UserApi, Configuration, OrganizationApi, type ResponseContext, ProjectApi } from '../openapi';
 import type { Middleware } from '../openapi';
 
 interface Notification {
@@ -64,3 +64,4 @@ const apiConfig=new Configuration({
 export const authAPI = new AuthApi(apiConfig);
 export const userAPI = new UserApi(apiConfig);
 export const organizationAPI = new OrganizationApi(apiConfig);
+export const projectAPI = new ProjectApi(apiConfig);
