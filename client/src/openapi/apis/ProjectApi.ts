@@ -150,7 +150,7 @@ export class ProjectApi extends runtime.BaseAPI {
     /**
      * Del User
      */
-    async projectDelUserRaw(requestParameters: ProjectDelUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async projectDelUserRaw(requestParameters: ProjectDelUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Member>> {
         if (requestParameters.projId === null || requestParameters.projId === undefined) {
             throw new runtime.RequiredError('projId','Required parameter requestParameters.projId was null or undefined when calling projectDelUser.');
         }
@@ -179,13 +179,13 @@ export class ProjectApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse(response, (jsonValue) => MemberFromJSON(jsonValue));
     }
 
     /**
      * Del User
      */
-    async projectDelUser(requestParameters: ProjectDelUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+    async projectDelUser(requestParameters: ProjectDelUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Member> {
         const response = await this.projectDelUserRaw(requestParameters, initOverrides);
         return await response.value();
     }

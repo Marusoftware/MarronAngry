@@ -36,7 +36,7 @@ async def add_user(proj_id:UUID, user_id:UUID, user:User=Depends(get_user)):
     await proj.members.add(member)
     return member
 
-@router.delete("/{proj_id}/user")
+@router.delete("/{proj_id}/user", response_model=Member)
 async def del_user(proj_id:UUID, user_id:UUID, user:User=Depends(get_user)):
     proj=await ProjectDB.get(id=proj_id).prefetch_related("organization")
     if not await OrganizationMember.exists(organization=proj.organization, user=user, is_admin=True) and user_id!=user.id:

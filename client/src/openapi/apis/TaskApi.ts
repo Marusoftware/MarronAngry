@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   HTTPValidationError,
+  Member,
   Task,
   TaskCreate,
   TaskUpdate,
@@ -23,6 +24,8 @@ import type {
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    MemberFromJSON,
+    MemberToJSON,
     TaskFromJSON,
     TaskToJSON,
     TaskCreateFromJSON,
@@ -31,8 +34,18 @@ import {
     TaskUpdateToJSON,
 } from '../models';
 
+export interface TaskAddUserRequest {
+    taskId: string;
+    userId: string;
+}
+
 export interface TaskCreateRequest {
     taskCreate: TaskCreate;
+}
+
+export interface TaskDelUserRequest {
+    taskId: string;
+    userId: string;
 }
 
 export interface TaskDeleteRequest {
@@ -52,6 +65,49 @@ export interface TaskUpdateRequest {
  * 
  */
 export class TaskApi extends runtime.BaseAPI {
+
+    /**
+     * Add User
+     */
+    async taskAddUserRaw(requestParameters: TaskAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Member>> {
+        if (requestParameters.taskId === null || requestParameters.taskId === undefined) {
+            throw new runtime.RequiredError('taskId','Required parameter requestParameters.taskId was null or undefined when calling taskAddUser.');
+        }
+
+        if (requestParameters.userId === null || requestParameters.userId === undefined) {
+            throw new runtime.RequiredError('userId','Required parameter requestParameters.userId was null or undefined when calling taskAddUser.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.userId !== undefined) {
+            queryParameters['user_id'] = requestParameters.userId;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/task/{task_id}/user`.replace(`{${"task_id"}}`, encodeURIComponent(String(requestParameters.taskId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MemberFromJSON(jsonValue));
+    }
+
+    /**
+     * Add User
+     */
+    async taskAddUser(requestParameters: TaskAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Member> {
+        const response = await this.taskAddUserRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Create
@@ -88,6 +144,49 @@ export class TaskApi extends runtime.BaseAPI {
      */
     async taskCreate(requestParameters: TaskCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Task> {
         const response = await this.taskCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Del User
+     */
+    async taskDelUserRaw(requestParameters: TaskDelUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Member>> {
+        if (requestParameters.taskId === null || requestParameters.taskId === undefined) {
+            throw new runtime.RequiredError('taskId','Required parameter requestParameters.taskId was null or undefined when calling taskDelUser.');
+        }
+
+        if (requestParameters.userId === null || requestParameters.userId === undefined) {
+            throw new runtime.RequiredError('userId','Required parameter requestParameters.userId was null or undefined when calling taskDelUser.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.userId !== undefined) {
+            queryParameters['user_id'] = requestParameters.userId;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/task/{task_id}/user`.replace(`{${"task_id"}}`, encodeURIComponent(String(requestParameters.taskId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MemberFromJSON(jsonValue));
+    }
+
+    /**
+     * Del User
+     */
+    async taskDelUser(requestParameters: TaskDelUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Member> {
+        const response = await this.taskDelUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
