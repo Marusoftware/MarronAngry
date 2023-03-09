@@ -1,0 +1,26 @@
+version: '3'
+services:
+  server:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/usr/src/app/server
+      - ./migrations:/usr/src/app/migrations
+    env_file:
+      - .env
+    depends_on:
+      - db
+  db:
+    build: ./migrations
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+  web:
+    image: httpd
+    
+volumes:
+  postgres:
