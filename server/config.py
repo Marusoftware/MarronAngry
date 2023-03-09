@@ -1,4 +1,4 @@
-from pydantic import BaseSettings, AnyUrl
+from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     postgres_host:str
