@@ -56,6 +56,11 @@ export interface TaskGetRequest {
     prjId: string;
 }
 
+export interface TaskNearRequest {
+    query: string;
+    prjId: string;
+}
+
 export interface TaskUpdateRequest {
     taskId: string;
     taskUpdate: TaskUpdate;
@@ -261,6 +266,53 @@ export class TaskApi extends runtime.BaseAPI {
      */
     async taskGet(requestParameters: TaskGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Task>> {
         const response = await this.taskGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Near
+     */
+    async taskNearRaw(requestParameters: TaskNearRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.query === null || requestParameters.query === undefined) {
+            throw new runtime.RequiredError('query','Required parameter requestParameters.query was null or undefined when calling taskNear.');
+        }
+
+        if (requestParameters.prjId === null || requestParameters.prjId === undefined) {
+            throw new runtime.RequiredError('prjId','Required parameter requestParameters.prjId was null or undefined when calling taskNear.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.query !== undefined) {
+            queryParameters['query'] = requestParameters.query;
+        }
+
+        if (requestParameters.prjId !== undefined) {
+            queryParameters['prj_id'] = requestParameters.prjId;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/task/near`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Near
+     */
+    async taskNear(requestParameters: TaskNearRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.taskNearRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

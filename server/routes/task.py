@@ -7,6 +7,7 @@ from ..security import get_user
 from ..models.read.user import Member, Task
 from ..models.db import Project, Organization, OrganizationMember, User, Task as TaskDB
 from ..models.write import TaskCreate, TaskUpdate
+from datetime import datetime, timedelta
 
 router=APIRouter(tags=["task"])
 
@@ -61,3 +62,11 @@ async def delete(task_id:UUID, user:User=Depends(get_user)):
     if not await OrganizationMember.exists(organization=task.project.organization, user=user):
         raise HTTPException(status_code=400, detail="No permission to do it.")
     await task.delete()
+
+@router.get("/near")
+async def near(query:str, prj_id:UUID, user:User=Depends(get_user)):
+    prj=await Project.get(id=prj_id).prefetch_related("organization")
+    if not await OrganizationMember.exists(organization=prj.organization, user=user):
+        raise HTTPException(status_code=400, detail="No permission to do it.")
+    date=datetime()+timedelta(weeks=1)
+    return [{"id":task.id, "name":task.name, "description":task.description, "time":task.time, "project_id":prj.id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=member.user.id) for member in await OrganizationMember.filter(organization=prj.organization).prefetch_related("tasks", "user") if task in member.tasks]} for task in await TaskDB.filter(project=prj, time__lte=date)]
