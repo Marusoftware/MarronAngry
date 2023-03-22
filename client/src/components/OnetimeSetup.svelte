@@ -1,6 +1,6 @@
 <script lang="ts">
     import { authAPI } from "../utils";
-    import { QRCodeImage } from "svelte-qrcode-image";
+    import Qrcode from "svelte-qrcode";
     import { Button, Heading, Modal } from "flowbite-svelte";
     import { createEventDispatcher } from "svelte";
     export let open=true;
@@ -28,7 +28,7 @@
 
 <Modal bind:open on:submit={submit} on:open={onOpen} title="One time token">
     <Heading>QRコードを認証アプリで読み取ってください。</Heading>
-    <QRCodeImage text={value}/>
+    <Qrcode value={value}  />
     携帯電話が使用できなくなった場合に備え、以下のリカバリーキーを安全な場所に保管してください:
     {otpRecovery}
     <svelte:fragment slot='footer'>
