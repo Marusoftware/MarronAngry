@@ -2,6 +2,7 @@ version: '3'
 services:
   server:
     build: .
+    stop_signal: SIGINT
     ports:
       - "8000:8000"
     volumes:
@@ -12,7 +13,7 @@ services:
     depends_on:
       - db
   db:
-    build: ./migrations
+    image: marusoftware/postgres:15-alpine
     volumes:
       - postgres:/var/lib/postgresql/data
     env_file:
