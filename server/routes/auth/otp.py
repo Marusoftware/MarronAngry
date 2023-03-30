@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Request
 from passlib.totp import TOTP, InvalidTokenError
 from ...models.db import Token as TokenDB, TokenType, User as UserDB
-from ...models.read.user import Token
-from ...models.write import OTPCreate
+from ...models.response.user import Token
+from ...models.request import OTPCreate
 from ...security import get_user
 import secrets
 

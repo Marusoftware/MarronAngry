@@ -4,9 +4,9 @@ from fastapi import APIRouter, HTTPException, Depends
 
 from ..security import get_user
 
-from ..models.read.user import Project, Member
+from ..models.response.user import Project, Member
 from ..models.db import Project as ProjectDB, Organization, OrganizationMember, User
-from ..models.write import ProjectCreate, ProjectUpdate
+from ..models.request import ProjectCreate, ProjectUpdate
 
 router=APIRouter(tags=["project"])
 

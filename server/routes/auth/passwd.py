@@ -2,8 +2,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ...security import oauth, get_user
-from ...models.read.user import User, Token
-from ...models.write import UserCreate
+from ...models.response.user import User, Token
+from ...models.request import UserCreate
 from ...models.db.user import User as UserDB
 from ...models.db.auth import Token as TokenDB, TokenType
 import secrets

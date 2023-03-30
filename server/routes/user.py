@@ -1,8 +1,8 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from ..security import get_user
-from ..models.read.user import User, UserOpen
-from ..models.write import UserUpdate
+from ..models.response.user import User, UserOpen
+from ..models.request import UserUpdate
 from ..models.db import User as UserDB
 from .auth.passwd import crypt
 

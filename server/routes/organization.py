@@ -3,9 +3,9 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..security import get_user
-from ..models.write import OrganizationCreate, OrganizationUpdate
+from ..models.request import OrganizationCreate, OrganizationUpdate
 from ..models.db import Organization as OrganizationDB, OrganizationMember, User as UserDB
-from ..models.read.user import Organization, Member
+from ..models.response.user import Organization, Member
 
 router=APIRouter(tags=["organization"])
 

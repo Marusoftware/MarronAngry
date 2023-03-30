@@ -2,7 +2,7 @@ import secrets
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from ...models.db import User as UserDB, Token as TokenDB, TokenType
-from ...models.read.user import User
+from ...models.response.user import User
 
 config = Config('.env')  # read config from .env file
 oauth = OAuth(config)

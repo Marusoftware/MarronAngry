@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Request
 
-from ...models.read.user import Token
+from ...models.response.user import Token
 from ...models.db import Token as TokenDB
 
 from .otp import router as otp
