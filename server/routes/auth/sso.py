@@ -2,7 +2,6 @@ import secrets
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from ...models.db import User as UserDB, Token as TokenDB, TokenType
-from ...models.response.user import User
 
 config = Config('.env')  # read config from .env file
 oauth = OAuth(config)
@@ -13,10 +12,6 @@ oauth.register(
         'scope': 'openid email profile'
     }
 )
-class test:
-    async def authorize_redirect(self, *args, **options):
-        return str(config.get("GOOGLE_CLIENT_SECRET"))
-oauth.test=test()
     
 from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse

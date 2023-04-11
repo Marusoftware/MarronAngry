@@ -1,6 +1,7 @@
 from uuid import UUID
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import List
 
 class UserCreate(BaseModel):
     name:str
@@ -25,7 +26,7 @@ class OrganizationUpdate(BaseModel):
 
 class OTPCreate(BaseModel):
     otp_url:str
-    otp_recovery:str
+    otp_recovery:List[str]
 
 class ProjectCreate(BaseModel):
     name:str

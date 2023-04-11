@@ -39,6 +39,10 @@ export interface AuthOtpAuthRequest {
     token: string;
 }
 
+export interface AuthOtpVerifyRequest {
+    recoveryKey: string;
+}
+
 export interface AuthSigninRequest {
     username: string;
     password: string;
@@ -166,6 +170,45 @@ export class AuthApi extends runtime.BaseAPI {
      */
     async authOtpSetup(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OTPCreate> {
         const response = await this.authOtpSetupRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Otpverify
+     */
+    async authOtpVerifyRaw(requestParameters: AuthOtpVerifyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.recoveryKey === null || requestParameters.recoveryKey === undefined) {
+            throw new runtime.RequiredError('recoveryKey','Required parameter requestParameters.recoveryKey was null or undefined when calling authOtpVerify.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.recoveryKey !== undefined) {
+            queryParameters['recovery_key'] = requestParameters.recoveryKey;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/auth/otp/verify`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Otpverify
+     */
+    async authOtpVerify(requestParameters: AuthOtpVerifyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.authOtpVerifyRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

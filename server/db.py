@@ -1,6 +1,7 @@
 from .models import db
-from tortoise import Tortoise
 from .config import Settings
+from fastapi import FastAPI
+from tortoise.contrib.fastapi import register_tortoise
 
 settings=Settings()
 
@@ -25,8 +26,5 @@ config={
     }
 }
 
-async def init_db():
-    await Tortoise.init(config=config)
-
-async def final_db():
-    await Tortoise.close_connections()
+def register_db(app:FastAPI):
+    register_tortoise(app=app, config=config, add_exception_handlers=True)

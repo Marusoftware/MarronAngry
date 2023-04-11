@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from ...security import oauth, get_user
 from ...models.response.user import User, Token
 from ...models.request import UserCreate
-from ...models.db.user import User as UserDB
+from ...models.db.user import User as UserDB, OTPStatus
 from ...models.db.auth import Token as TokenDB, TokenType
 import secrets
 from passlib.context import CryptContext
@@ -17,13 +17,16 @@ router=APIRouter()
 
 @router.post("/signin", response_model=Token)
 async def signin(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
-    user=await UserDB.get_or_none(Q(name=form_data.username) | Q(email=form_data.username))
+    user=await UserDB.get_or_none(email=form_data.username)
     if user is None:
         raise HTTPException(status_code=400, detail="Password or Username is wrong.")
     if user.password is not None:
         if not crypt.verify(form_data.password,user.password):
             raise HTTPException(status_code=400, detail="Password or Username is wrong.")
-        if user.otp_key is not None:
+        for user_dict in request.session.get("users", []):
+            if user_dict["id"] == str(user.id):
+                raise HTTPException(status_code=401, detail="Already logged in.")
+        if user.otp_key is not None and user.otp_status == OTPStatus.working:
             token=await TokenDB.create(token=secrets.token_hex(32), token_type=TokenType.pre, user=user)
             return {"access_token": token.token, "token_type": "pre", "user_id":str(user.id)}
         else:
@@ -35,6 +38,8 @@ async def signin(request: Request, form_data: OAuth2PasswordRequestForm = Depend
 
 @router.post("/signup", response_model=User)
 async def signup(user:UserCreate):
+    if await UserDB.exists(email=user.email):
+        raise HTTPException(status_code=400, detail="Password or Username is wrong.")
     return await UserDB.create(name=user.name, fullname=user.fullname, email=user.email, password=crypt.hash(user.password), is_dev=False)
 
 @router.post("/signout")

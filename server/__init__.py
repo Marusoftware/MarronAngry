@@ -1,5 +1,4 @@
-from fastapi import APIRouter, FastAPI, Request
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, FastAPI
 from fastapi_socketio import SocketManager
 
 def custom_generate_unique_id(route: APIRouter):
@@ -31,14 +30,8 @@ app.add_middleware(CORSMiddleware,
 from .routes import router
 app.include_router(router)
 
-from .db import init_db, final_db
-@app.on_event("startup")
-async def startup():
-    await init_db()
-
-@app.on_event("shutdown")
-async def shutdown():
-    await final_db()
+from .db import register_db
+register_db(app)
 
 @app.sio.on('join')
 async def handle_join(sid, *args, **kwargs):

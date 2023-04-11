@@ -27,10 +27,10 @@ export interface OTPCreate {
     otpUrl: string;
     /**
      * 
-     * @type {string}
+     * @type {Array<string>}
      * @memberof OTPCreate
      */
-    otpRecovery: string;
+    otpRecovery: Array<string>;
 }
 
 /**
