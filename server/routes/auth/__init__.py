@@ -17,4 +17,10 @@ router.include_router(login)
 async def session(request:Request):
     if not "users" in request.session:
         return []
-    return [ Token(access_token=user["token"], token_type="bearer", user_id=user["id"]) for user in request.session["users"] if await TokenDB.exists(token=user["token"])]
+    tokens=[]
+    for user in request.session["users"]:
+        token=await TokenDB.get_or_none(token=user["token"]).prefetch_related("user")
+        if token is None:
+            continue
+        tokens.append(Token(access_token=user["token"], token_type="bearer", user_id=user["id"], is_sso=(token.user.password is None)))
+    return tokens

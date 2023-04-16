@@ -19,6 +19,7 @@ models/Task.ts
 models/TaskCreate.ts
 models/TaskUpdate.ts
 models/Token.ts
+models/TokenType.ts
 models/User.ts
 models/UserCreate.ts
 models/UserOpen.ts

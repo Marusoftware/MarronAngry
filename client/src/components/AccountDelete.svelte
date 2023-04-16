@@ -2,8 +2,7 @@
     import { Button, Heading, Modal } from "flowbite-svelte";
     import { field, form } from "svelte-forms";
     import { required } from "svelte-forms/validators";
-    import { accessToken, userAPI } from "../utils";
-    import { user } from "../utils/store";
+    import { tokens, userAPI } from "../utils";
     import Field from "./Field.svelte";
 
     const password = field('password', '', [required()])
@@ -19,8 +18,10 @@
         await userAPI.userDeleteMe({
             password:$password.value
         })
-        user.set(null)
-        accessToken.set("")
+        tokens.update((v)=>{
+            v.splice(0)
+            return v
+        })
         open=false
     }
 </script>

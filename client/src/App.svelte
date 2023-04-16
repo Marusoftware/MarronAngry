@@ -16,8 +16,7 @@
     Radio
   } from "flowbite-svelte";
   import { Router, Route, navigate } from "svelte-routing";
-  import { accessToken, authAPI, destroyNotification, notifications, userAPI } from "./utils";
-
+  import { tokens, authAPI, destroyNotification, notifications, userAPI } from "./utils";
   import Home from "./pages/Home.svelte";
   import Signin from "./pages/Signin.svelte";
   import Signup from "./pages/Signup.svelte";
@@ -25,30 +24,23 @@
   import { onMount } from "svelte";
   import Settings from "./pages/Settings.svelte";
   import { organizations, user } from "./utils/store";
-  import type { Token } from "./openapi";
   import Organization from "./pages/Organization.svelte";
   import Project from "./pages/Project.svelte";
   import Task from "./pages/Task.svelte";
-  let tokens:Token[]
-  onMount(async () => {
-    tokens=await authAPI.authSession()
-    if(tokens.length!=0 && !$accessToken){
-      accessToken.set(tokens[0].accessToken)
-    }
-  })
 
+  onMount(async () => {
+    tokens.set(await authAPI.authSession())
+  })
   async function signout() {
     await authAPI.authSignout()
-    tokens=await authAPI.authSession()
-    if(tokens.length!=0 && !$accessToken){
-      accessToken.set(tokens[0].accessToken)
-    } else {
-      accessToken.set("")
-    }
+    tokens.update((value)=> value.slice(1))
   }
 
   async function changeUser(token:string){
-    accessToken.set(token)
+    tokens.update((value)=>{
+      value.unshift(value.splice(value.findIndex((v)=>v.accessToken===token))[0])
+      return value
+    })
   }
 
   let organization:number=0
@@ -66,7 +58,7 @@
     <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Marron</span>
   </NavBrand>
   <div class="flex items-center md:order-2">
-    {#if $accessToken}
+    {#if $tokens.length}
       <Avatar id="avatar-menu" src="/images/profile-picture-3.webp" />
     {:else}
       <Button size="sm" on:click={() => navigate("/signin")} >サインイン</Button>
@@ -74,17 +66,18 @@
     <DarkMode />
     <NavHamburger on:click={toggle} class1="w-full md:flex md:w-auto md:order-1"/>
   </div>
-  {#if $accessToken}
+  {#if $tokens.length}
   <Dropdown placement="bottom" triggeredBy="#avatar-menu">
     <DropdownHeader>
     <span class="block text-sm"> { $user.fullname }</span>
-    <span class="block truncate text-sm font-medium"> {$user.email} </span>
+    <span class="block truncate text-sm font-medium"> { $user.email } </span>
     </DropdownHeader>
     <DropdownItem on:click={()=>{navigate("/settings")}}>Settings</DropdownItem>
     <DropdownDivider />
     <DropdownItem class="flex items-center justify-between"><Chevron placement="right">Switch Account</Chevron></DropdownItem>
     <Dropdown placement="left-start">
-      {#each tokens as token (token.accessToken)}
+      {#each $tokens as token (token.accessToken)}
+        {#if token.userId!==$tokens[0].userId}
         {#await userAPI.userGet({id:token.userId})}
         <DropdownItem>Getting user info...</DropdownItem>
         {:then user}
@@ -92,6 +85,7 @@
           <Avatar src="/images/profile-picture-3.webp" size="xs" />{user.name}
         </DropdownItem>
         {/await}
+        {/if}
       {/each}
       <DropdownItem on:click={() => navigate("/signin")}>+ Add user</DropdownItem>
     </Dropdown>

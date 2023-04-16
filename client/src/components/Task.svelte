@@ -3,7 +3,7 @@
     import { createEventDispatcher, onMount } from "svelte";
     import { field, form } from "svelte-forms";
     import { pattern, required } from "svelte-forms/validators";
-    import type { Task, Project } from "../openapi";
+    import type { Task } from "../openapi";
     import { projectAPI, taskAPI, userAPI } from "../utils";
     import { organizations } from "../utils/store";
     import Field from "./Field.svelte";

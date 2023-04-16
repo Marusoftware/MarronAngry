@@ -14,6 +14,7 @@ export * from './Task';
 export * from './TaskCreate';
 export * from './TaskUpdate';
 export * from './Token';
+export * from './TokenType';
 export * from './User';
 export * from './UserCreate';
 export * from './UserOpen';

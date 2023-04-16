@@ -25,13 +25,13 @@ async def signin(request: Request, form_data: OAuth2PasswordRequestForm = Depend
             raise HTTPException(status_code=400, detail="Password or Username is wrong.")
         if user.otp_key is not None:
             token=await TokenDB.create(token=secrets.token_hex(32), token_type=TokenType.pre, user=user)
-            return {"access_token": token.token, "token_type": "pre", "user_id":str(user.id)}
+            return Token(access_token=token.token, token_type="pre", user_id=user.id)
         else:
             token=await TokenDB.create(token=secrets.token_hex(32), token_type=TokenType.bearer, user=user)
             if "users" not in request.session:
                 request.session["users"]=[]
             request.session["users"].append({"name":user.name, "id":str(user.id), "token":token.token})
-            return {"access_token": token.token, "token_type": "bearer", "user_id":str(user.id)}
+            return Token(access_token=token.token, token_type="bearer", user_id=user.id)
 
 @router.post("/signup", response_model=User)
 async def signup(user:UserCreate):

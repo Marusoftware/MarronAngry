@@ -3,7 +3,7 @@
   
   import { form, field } from 'svelte-forms';
   import { max, required } from 'svelte-forms/validators';
-  import { authAPI, accessToken } from "../utils";
+  import { authAPI, tokens } from "../utils";
   import Onetime from "../components/Onetime.svelte";
   import { navigate } from "svelte-routing";
   import { A, Button, Card, Heading, Popover } from "flowbite-svelte";
@@ -27,7 +27,10 @@
       password:$password.value
     })
     if(token.tokenType=="bearer"){
-      accessToken.set(token.accessToken)
+      tokens.update((v)=>{
+        v.unshift(token)
+        return v
+      })
       navigate("/")
     } else {
       preToken=token.accessToken

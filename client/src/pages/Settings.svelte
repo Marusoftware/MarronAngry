@@ -2,12 +2,12 @@
     import Field from "../components/Field.svelte";
     import { form, field } from "svelte-forms";
     import { email, max, required } from "svelte-forms/validators";
-    import { user } from "../utils/store";
     import { Button, Heading } from "flowbite-svelte";
     import { userAPI } from "../utils";
     import PasswordUpdate from "../components/PasswordUpdate.svelte";
     import OnetimeSetup from "../components/OnetimeSetup.svelte";
     import AccountDelete from "../components/AccountDelete.svelte";
+    import { user } from "../utils/store";
 
     const name = field("name", $user.name, [required(), max(1024)]);
     const fullname = field("fullname", $user.fullname, [max(1024)]);

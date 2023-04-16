@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { TokenType } from './TokenType';
+import {
+    TokenTypeFromJSON,
+    TokenTypeFromJSONTyped,
+    TokenTypeToJSON,
+} from './TokenType';
+
 /**
  * 
  * @export
@@ -27,16 +34,22 @@ export interface Token {
     accessToken: string;
     /**
      * 
-     * @type {string}
+     * @type {TokenType}
      * @memberof Token
      */
-    tokenType: string;
+    tokenType: TokenType;
     /**
      * 
      * @type {string}
      * @memberof Token
      */
     userId: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Token
+     */
+    isSso?: boolean;
 }
 
 /**
@@ -62,8 +75,9 @@ export function TokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): Tok
     return {
         
         'accessToken': json['access_token'],
-        'tokenType': json['token_type'],
+        'tokenType': TokenTypeFromJSON(json['token_type']),
         'userId': json['user_id'],
+        'isSso': !exists(json, 'is_sso') ? undefined : json['is_sso'],
     };
 }
 
@@ -77,8 +91,9 @@ export function TokenToJSON(value?: Token | null): any {
     return {
         
         'access_token': value.accessToken,
-        'token_type': value.tokenType,
+        'token_type': TokenTypeToJSON(value.tokenType),
         'user_id': value.userId,
+        'is_sso': value.isSso,
     };
 }
 

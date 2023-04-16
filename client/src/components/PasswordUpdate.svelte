@@ -3,7 +3,6 @@
     import { field, form } from "svelte-forms";
     import { matchField, required } from "svelte-forms/validators";
     import { userAPI } from "../utils";
-    import { user } from "../utils/store";
     import Field from "./Field.svelte";
 
     const oldpassword = field('oldpassword', '', [required()])
@@ -19,12 +18,12 @@
         if(!$updateForm.valid){
             return
         }
-        user.set(await userAPI.userUpdateMe({
+        await userAPI.userUpdateMe({
             userUpdate:{
                 oldPassword:$oldpassword.value,
                 newPassword:$password.value
             }
-        }))
+        })
     }
 
 </script>

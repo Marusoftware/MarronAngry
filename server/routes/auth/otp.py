@@ -34,7 +34,7 @@ async def otpAuth(request:Request, pre_token:str, token:str):
     if "users" not in request.session:
         request.session["users"]=[]
     request.session["users"].append({"name":user.name, "id":str(user.id), "token":db_token.token})
-    return {"access_token": db_token.token, "token_type": "bearer", "user_id":str(user.id)}
+    return Token(access_token=token.token, token_type="bearer", user_id=user.id)
 
 @router.delete("/")
 async def otpDelete(user:UserDB =Depends(get_user)):

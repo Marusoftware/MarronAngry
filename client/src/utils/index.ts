@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store';
-import { AuthApi, UserApi, Configuration, OrganizationApi, type ResponseContext, ProjectApi, TaskApi } from '../openapi';
+import { AuthApi, UserApi, Configuration, OrganizationApi, type ResponseContext, ProjectApi, TaskApi, type Token } from '../openapi';
 import type { Middleware } from '../openapi';
 
 interface Notification {
@@ -11,7 +11,7 @@ interface Notification {
     timeout?: number
 }
 
-export const accessToken=writable("")
+export const tokens=writable<Token[]>([])
 export const notifications=writable<Notification[]>([])
 
 export function showNotification(notification:Notification){
@@ -33,7 +33,12 @@ export const destroyNotification = (id:number) => {
   }
 
 async function getAccessToken(){
-    return "Bearer "+get(accessToken)
+    const ts=get(tokens)
+    if(ts.length){
+        return "Bearer "+ts[0].accessToken
+    } else {
+        return ""
+    }
 }
 
 class APIExceptionHandlerMiddleware implements Middleware{

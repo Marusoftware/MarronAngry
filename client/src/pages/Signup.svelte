@@ -1,7 +1,7 @@
 <script lang="ts">
   import { form, field } from 'svelte-forms';
   import { email, matchField, max, required } from 'svelte-forms/validators';
-  import { authAPI, accessToken } from "../utils";
+  import { authAPI, tokens } from "../utils";
   import { navigate } from "svelte-routing";
   import OnetimeSetup from "../components/OnetimeSetup.svelte";
   import type { User } from "../openapi";
@@ -39,7 +39,10 @@
       username:user.name,
       password:$password.value
     })
-    accessToken.set(token.accessToken)
+    tokens.update((value)=>{
+      value.unshift(token)
+      return value
+    })
     oneTimeOpen=true
   }
 </script>

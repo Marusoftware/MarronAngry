@@ -3,7 +3,7 @@
     import { createEventDispatcher } from "svelte";
     import { form, field } from 'svelte-forms';
     import { max, required } from "svelte-forms/validators";
-    import { accessToken, authAPI } from "../utils";
+    import { tokens, authAPI } from "../utils";
     import Field from "./Field.svelte";
     export let open=true;
     export let preToken:string
@@ -22,7 +22,11 @@
             preToken: preToken,
             token:$token.value
         })
-        accessToken.set(token_auth.accessToken)
+        tokens.update((v)=>{
+            v.splice(0)
+            v.unshift(token_auth)
+            return v
+        })
         open=false;
         dispatch("submit")
     }
