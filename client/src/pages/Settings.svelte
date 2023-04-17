@@ -3,7 +3,7 @@
     import { form, field } from "svelte-forms";
     import { email, max, required } from "svelte-forms/validators";
     import { Button, Heading } from "flowbite-svelte";
-    import { userAPI } from "../utils";
+    import { tokens, userAPI } from "../utils";
     import PasswordUpdate from "../components/PasswordUpdate.svelte";
     import OnetimeSetup from "../components/OnetimeSetup.svelte";
     import AccountDelete from "../components/AccountDelete.svelte";
@@ -76,4 +76,4 @@
     />
     <Button type="submit">更新</Button> <Button type="reset">リセット</Button>
 </form>
-<Button on:click={()=>{passwordOpen=true}}>パスワードの変更</Button> <Button on:click={()=>{otpOpen=true}}>ワンタイムトークンの設定</Button> <Button on:click={()=>{deleteOpen=true}}>アカウントの削除</Button>
+<Button on:click={()=>{passwordOpen=true}}>{#if $tokens[0].isSso}パスワードの設定(Marusoftwareアカウントへの移行){:else}パスワードの変更{/if}</Button> {#if !$tokens[0].isSso}<Button on:click={()=>{otpOpen=true}}>ワンタイムトークンの設定</Button>{/if} <Button on:click={()=>{deleteOpen=true}}>アカウントの削除</Button>

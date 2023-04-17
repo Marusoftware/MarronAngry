@@ -28,9 +28,11 @@ async def delete_me(user:UserDB=Depends(get_user), password:str=None):
 @router.patch("/me", response_model=User)
 async def update_me(user:UserUpdate, user_db:UserDB=Depends(get_user)):
     update_dict=user.dict()
-    if user.oldPassword is not None and user.newPassword is not None:
+    if (user.oldPassword is not None and user.newPassword is not None):
         if crypt.verify(user.oldPassword, user_db.password):
             update_dict["password"]=crypt.hash(user.newPassword)
+    elif user_db.password is None and user.newPassword is not None:
+        update_dict["password"]=crypt.hash(user.newPassword)
     def checkUpdate(item):
         key, value=item
         if key in ["oldPassword", "newPassword"]:

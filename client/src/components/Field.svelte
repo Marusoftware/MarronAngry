@@ -35,7 +35,7 @@
     <Input id={id} type={type} bind:value={value} color={invalid ? "red" : "base"} placeholder={placeholder} {...$$props} >
         <svelte:fragment slot="right">
             {#if password}
-                <button on:click={changeVisible}>
+                <button on:click={changeVisible} type="button">
                     {#if type=="password"}
                     <EyeSlash />
                     {:else}

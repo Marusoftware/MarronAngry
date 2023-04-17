@@ -11,27 +11,36 @@
 
     async function submit(e:Event){
         e.preventDefault()
-        await updateForm.validate()
-        if(!$updateForm.valid){
-            return
+        if(!$tokens[0].isSso){
+            await updateForm.validate()
+            if(!$updateForm.valid){
+                return
+            }
+            await userAPI.userDeleteMe({
+                password:$password.value
+            })
+        } else {
+            await userAPI.userDeleteMe()
         }
-        await userAPI.userDeleteMe({
-            password:$password.value
-        })
         tokens.update((v)=>{
             v.splice(0)
             return v
         })
         open=false
+        location.href="/"
     }
 </script>
 
 <Modal bind:open title="アカウントの削除">
+    {#if $tokens[0].isSso}
+    <Heading>本当にアカウントを削除してもよろしいですか?</Heading>
+    {:else}
     <Heading>本当にアカウントを削除してもよろしければ、パスワードを入力してください</Heading>
     <form on:submit={submit}>
         <Field id="password" type="password" labelText="Password" placeholder="Enter password..." bind:value={$password.value} invalid={$password.invalid} invalidText={$password.errors.join(", ")} />
     </form>
+    {/if}
     <svelte:fragment slot="footer">
-        <Button on:click={submit} disabled={!$updateForm.valid}>削除</Button>
+        <Button on:click={submit} disabled={!$updateForm.valid}>削除</Button><Button on:click={()=>open=false}>キャンセル</Button>
     </svelte:fragment>
 </Modal>
