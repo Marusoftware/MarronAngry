@@ -32,7 +32,7 @@
 
 <div class="mb-6">
     <Label for={id} color={invalid ? "red" : "gray"} class="block mb-2" >{labelText}</Label>
-    <Input id={id} type={type} bind:value={value} color={invalid ? "red" : "base"} placeholder={placeholder} {...$$props} >
+    <Input id={id} bind:type={type} bind:value={value} color={invalid ? "red" : "base"} placeholder={placeholder} {...$$props} >
         <svelte:fragment slot="right">
             {#if password}
                 <button on:click={changeVisible} type="button">
