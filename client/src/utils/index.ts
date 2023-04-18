@@ -19,13 +19,19 @@ export function showNotification(notification:Notification){
         id :Math.floor(Math.random() * 10000),
         subtitle: "",
         caption: "",
-        timeout:0
+        timeout:5
     }
-    notifications.update((all) =>[{
+    notification={
         ...defaults,
         ...notification
-    }, ...all])
-    return defaults.id
+    }
+    if(notification.timeout!==0){
+        setTimeout(() => {
+            destroyNotification(notification.id)
+        }, (notification.timeout??0)*1000);
+    }
+    notifications.update((all) =>[notification, ...all])
+    return notification.id
 }
 
 export const destroyNotification = (id:number) => {
