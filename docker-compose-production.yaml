@@ -1,26 +1,28 @@
-version: '3'
+version: '3.7'
 services:
   server:
     build: .
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./server:/usr/src/app/server
-      - ./migrations:/usr/src/app/migrations
+    stop_signal: SIGINT
     env_file:
       - .env
     depends_on:
       - db
+    init: true
   db:
-    build: ./migrations
+    image: marusoftware/postgres:15-alpine
     volumes:
       - postgres:/var/lib/postgresql/data
     env_file:
       - .env
+  client:
+    build:
+      context: ./client
+      dockerfile: ./Dockerfile_production
     ports:
-      - "5432:5432"
-  web:
-    image: httpd
-    
+      - 7080:7080
+      - 80:80
+      - 443:443
+         
+
 volumes:
   postgres:

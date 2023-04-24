@@ -8,8 +8,8 @@ def custom_generate_unique_id(route: APIRouter):
 app = FastAPI(title="Marron API", description="API of Marron", generate_unique_id_function=custom_generate_unique_id)
 socket_manager=SocketManager(app=app, mount_location="/ws/", cors_allowed_origins=[])
 
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["marron.marusoftware.net", "localhost"])
+#from fastapi.middleware.trustedhost import TrustedHostMiddleware
+#app.add_middleware(TrustedHostMiddleware, allowed_hosts=["marron.marusoftware.net", "localhost"])
 
 from fastapi.middleware.gzip import GZipMiddleware
 app.add_middleware(GZipMiddleware, minimum_size=1000)

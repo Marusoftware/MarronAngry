@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   server:
-    build: .
+    image: marusoftware/marron:server-latest
     stop_signal: SIGINT
     ports:
       - "8000:8000"
@@ -22,7 +22,7 @@ services:
     ports:
       - "5432:5432"
   client:
-    build: ./client
+    image: marusoftware/marron:client-latest
     ports:
       - "5000:5000"
     volumes:
