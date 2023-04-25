@@ -5,7 +5,7 @@
   import { navigate } from "svelte-routing";
   import OnetimeSetup from "../components/OnetimeSetup.svelte";
   import type { User } from "../openapi";
-  import { Heading, Button, List, Li, Progressbar, Card } from "flowbite-svelte";
+  import { Heading, Button, List, Li, Card, StepIndicator } from "flowbite-svelte";
   import Field from "../components/Field.svelte";
 
   const name = field('name', '', [required(), max(1024)])
@@ -15,7 +15,7 @@
   const passwordConfirmation = field('passwordConfirmation', '', [required(), matchField(password)])
   const loginForm = form(name, fullname, mail, password, passwordConfirmation)
 
-  let currentIndex=0
+  let currentIndex=1
   let user:User
   async function submit(e:Event) {
     e.preventDefault()
@@ -31,7 +31,7 @@
         password:$password.value
       }
     })
-    currentIndex=2
+    currentIndex=3
   }
   let oneTimeOpen=false;
   async function goOneTime(){
@@ -45,39 +45,17 @@
     })
     oneTimeOpen=true
   }
+
+  const steps=[
+    "プライバシーポリシー",
+    "アカウント作成",
+    "追加のセキュリティ"
+  ]
 </script>
 
-<ol class="items-center w-full space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
-  <li class="flex items-center text-blue-500 dark:text-gray-400 space-x-2.5">
-      <span class="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
-          1
-      </span>
-      <span>
-          <h3 class="font-medium leading-tight">プライバシーポリシー</h3>
-          <p class="text-sm">サービスの利用にはプライバシーポリシーへの同意が必要です。<p>
-      </span>
-    </li>
-  <li class="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
-      <span class="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
-          2
-      </span>
-      <span>
-          <h3 class="font-medium leading-tight">アカウント作成</h3>
-          <p class="text-sm">必要な情報を入力して、アカウントを作成します。<p>
-      </span>
-    </li>
-  <li class="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
-      <span class="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
-          3
-      </span>
-      <span>
-          <h3 class="font-medium leading-tight">追加のセキュリティ</h3>
-          <p class="text-sm">「万一」のときにより安全にするために...<p>
-      </span>
-  </li>
-</ol>
-<Progressbar progress={String(Math.round((currentIndex+1)/3*100))} size="h-4" labelInside />
-  {#if currentIndex==0}
+<StepIndicator currentStep={currentIndex} {steps} color="green" />
+
+  {#if currentIndex==1}
     <Heading>プライバシーポリシーをお読みください。</Heading>
     <List tag="ol" list="decimal">
       <Li>概要</Li>
@@ -91,7 +69,7 @@
       万一漏洩した際には、その情報(漏洩に関する詳細)を速やかに公開いたします。<br />
       ただし、漏洩によって発生したいかなる損害に対してもMarusoftwareは責任をとらないものとします。<br />
       <Li>セキュリティ上の例外</Li>
-      <List tag="ul" class="pl-5 mt-2 space-y-1">
+      <List tag="ul" class="pl-5 mt-2 space-y-1" ulClass="">
        <Li>利用者の環境が、SSL(TLS)に対応していない。もしくは使用していない。</Li> 
        Marusoftwareのサーバーでは2020年11月現在、多くの情報の送受信にTLSによる暗号化を適用できます。<br />
        これを利用することで、この利用者の利用するコンピュータとMarusoftwareのサーバ間で暗号化通信が確立され、利用者の個人情報の不正取得が困難となります。<br />
@@ -113,15 +91,15 @@
       </List>
      </List>
     同意されない場合はこのページを閉じてください。<br />
-    <Button on:click={() => {currentIndex=1}}>同意して続行</Button>
-  {:else if currentIndex==1}
+    <Button on:click={() => {currentIndex=2}}>同意して続行</Button>
+  {:else if currentIndex==2}
     <Heading>アカウント情報を入力してください</Heading>
     <div class="grid grid-cols-2">
       <div class="col-span-1">
       <Heading tag="h2">情報が必要な理由</Heading>
       <Card horizontal>
         ユーザー名とメールアドレス、パスワードはアカウントへのログイン時に使用します。<br />
-        メールアドレスは、ご利用者様へのご連絡に使用する場合もあります。<br />
+        メールアドレスは、ご利用者様へのご連絡などに使用します。<br />
         パスワードはなるべく推測されにくく多様な種類の文字を用いた長いものにしてください。<br />
         また、タイプミスによるサインイン不能を防止するため、パスワードは2回入力してください。<br />
         フルネームの入力は任意で、他のユーザーには表示されません。<br />
@@ -160,7 +138,7 @@
       </form>
     </div>
     </div>
-  {:else if currentIndex==2}
+  {:else if currentIndex==3}
     <Heading>ご苦労さまでした。</Heading>
     <Heading tag="h2">最低限必要な登録手続きは終了しました。ワンタイムパスワードを用いた追加のセキュリティはいかがですか?</Heading>
     <Button on:click={goOneTime}>利用します。</Button>
