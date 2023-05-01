@@ -10,8 +10,8 @@
   import Field from "../components/Field.svelte";
 
   export let username=""
-  const name = field('name', username, [required(), max(1024)])
-  const password = field('password', '', [required(), max(1024)])
+  let name = field('name', username, [required(), max(1024)])
+  let password = field('password', '', [required(), max(1024)])
   const loginForm = form(name, password)
   let OnetimeOpen=false
   let preToken=""
@@ -54,14 +54,17 @@
     <Heading>Marusoftwareアカウントをお持ちの方</Heading>
     <form on:submit={submit}>
     <Field 
-      id="name"
-      labelText="User name or Email"
+      type="text"
+      label="User name or Email"
       placeholder="Enter user name or email..."
-      bind:value={$name.value}
-      invalid={$name.invalid}
-      invalidText={$name.errors.join(", ")}
+      bind:store={name}
     />
-    <Field id="password" type="password" labelText="Password" placeholder="Enter password..." bind:value={$password.value} invalid={$password.invalid} invalidText={$password.errors.join(", ")} />
+    <Field 
+      type="password"
+      label="Password"
+      placeholder="Enter password..."
+      bind:store={password}
+    />
     サインインすると、
     <A inline href="https://marusoftware.net/privacypolicy.html">
       プライバシーポリシー

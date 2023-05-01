@@ -9,10 +9,10 @@
     const dispatch=createEventDispatcher()
 
     export let organization:Organization={id:"", name:"",description:"", members:[]};
-    const name = field('name', "", [required()])
-    const description = field('description', "", [required()])
+    let name = field('name', "", [required()])
+    let description = field('description', "", [required()])
     const updateForm = form(name, description)
-    const member=field("member","",[pattern(/([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})/)])
+    let member=field("member","",[pattern(/([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})/)])
     const memberForm = form(member)
 
     export let open = false;
@@ -74,8 +74,8 @@
         <Heading>Create Organization</Heading>
     {/if}
     <form on:submit={submit}>
-        <Field id="name" type="text" labelText="Name" placeholder="Enter name..." bind:value={$name.value} invalid={$name.invalid} invalidText={$name.errors.join(", ")} />
-        <Field id="description" type="text" labelText="Description" placeholder="Enter description..." bind:value={$description.value} invalid={$description.invalid} invalidText={$description.errors.join(", ")} />
+        <Field type="text" label="Name" placeholder="Enter name..." bind:store={name} />
+        <Field type="text" label="Description" placeholder="Enter description..." bind:store={description} />
     </form>
     {#if organization.id}
     <Table>
@@ -103,7 +103,7 @@
             {/each}
         </TableBody>
     </Table>
-    <Field id="uid" type="text" labelText="UserID" placeholder="Enter UserID..." bind:value={$member.value} invalid={$member.invalid} invalidText={$member.errors.join(", ")} ></Field><Button on:click={addMember}>Add member</Button>
+    <Field type="text" label="UserID" placeholder="Enter UserID..." bind:store={member} /><Button on:click={addMember}>Add member</Button>
     {/if}
     <svelte:fragment slot="footer">
         <Button on:click={submit} disabled={!$updateForm.valid}>{#if organization.id}変更{:else}作成{/if}</Button>

@@ -9,7 +9,7 @@
     export let preToken:string
     const dispatch=createEventDispatcher()
 
-    const token=field("token", "", [required(), max(6)])
+    let token=field("token", "", [required(), max(6)])
     const onetimeForm=form(token)
 
     async function submit(e:Event){
@@ -36,11 +36,9 @@
     <Heading>ワンタイムトークンを入力してください。</Heading>
     <Field
         type="password"
-        labelText="One time token"
+        label="One time token"
         placeholder="Enter an One time token..."
-        bind:value={$token.value}
-        invalid={$token.invalid}
-        invalidText={$token.errors.join(", ")}
+        bind:store={token}
     />
     <svelte:fragment slot="footer">
         <Button on:click={submit} disabled={!$onetimeForm.valid}>認証</Button>

@@ -3,11 +3,16 @@
     import type { InputType } from "flowbite-svelte/types";
     import { Eye, EyeSlash } from "svelte-heros-v2";
     import { onMount } from "svelte";
-    export let labelText=""
-    export let invalidText=""
-    export let invalid=false
-    export let value: string | number
-    export let id:string=""
+    import type { Writable } from "svelte/store";
+    import type { Field } from "svelte-forms/types";
+    import { filterMessage } from "../utils";
+    export let label:string=""
+    export let store:Omit<Writable<Field<string>>, "set"> & {
+        validate: () => Promise<Field<string>>;
+        reset: () => void;
+        clear: () => void;
+        set(this: void, value: string | Field<string>): void;
+    };
     export let type:InputType="text"
     export let placeholder=""
     let password:boolean=false
@@ -31,8 +36,8 @@
 </script>
 
 <div class="mb-6">
-    <Label for={id} color={invalid ? "red" : "gray"} class="block mb-2" >{labelText}</Label>
-    <Input id={id} bind:type={type} bind:value={value} color={invalid ? "red" : "base"} placeholder={placeholder} {...$$props} >
+    <Label for={label.toLowerCase()} color={$store.invalid ? "red" : "gray"} class="block mb-2" >{label}</Label>
+    <Input id={label.toLowerCase()} bind:type={type} bind:value={$store.value} color={$store.invalid ? "red" : "base"} placeholder={placeholder} {...$$props} >
         <svelte:fragment slot="right">
             {#if password}
                 <button on:click={changeVisible} type="button">
@@ -45,7 +50,7 @@
             {/if}
         </svelte:fragment>
     </Input>
-    {#if invalid}
-    <Helper color={invalid ? "red" : "gray"} >{invalidText}</Helper>
+    {#if $store.invalid}
+    <Helper color={$store.invalid ? "red" : "gray"} >{filterMessage($store.errors.join(", "))}</Helper>
     {/if}
 </div>

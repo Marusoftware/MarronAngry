@@ -5,7 +5,7 @@
     import { tokens, userAPI } from "../utils";
     import Field from "./Field.svelte";
 
-    const password = field('password', '', [required()])
+    let password = field('password', '', [required()])
     const updateForm = form(password)
     export let open = false;
 
@@ -37,7 +37,7 @@
     {:else}
     <Heading>本当にアカウントを削除してもよろしければ、パスワードを入力してください</Heading>
     <form on:submit={submit}>
-        <Field id="password" type="password" labelText="Password" placeholder="Enter password..." bind:value={$password.value} invalid={$password.invalid} invalidText={$password.errors.join(", ")} />
+        <Field type="password" label="Password" placeholder="Enter password..." bind:store={password} />
     </form>
     {/if}
     <svelte:fragment slot="footer">

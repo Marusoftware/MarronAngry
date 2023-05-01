@@ -8,11 +8,11 @@
   import { Heading, Button, List, Li, Card, StepIndicator } from "flowbite-svelte";
   import Field from "../components/Field.svelte";
 
-  const name = field('name', '', [required(), max(1024)])
-  const fullname = field('fullname', '', [max(1024)])
-  const mail = field('email', '', [required(), email(), max(1024)])
-  const password = field('password', '', [required()])
-  const passwordConfirmation = field('passwordConfirmation', '', [required(), matchField(password)])
+  let name = field('name', '', [required(), max(1024)])
+  let fullname = field('fullname', '', [max(1024)])
+  let mail = field('email', '', [required(), email(), max(1024)])
+  let password = field('password', '', [required()])
+  let passwordConfirmation = field('passwordConfirmation', '', [required(), matchField(password)])
   const loginForm = form(name, fullname, mail, password, passwordConfirmation)
 
   let currentIndex=1
@@ -108,32 +108,35 @@
       <div class="col-span-1">
       <form on:submit={submit}>
         <Field
-          id="name"
-          labelText="User name"
+          type="text"
+          label="User name"
           placeholder="Enter user name..."
-          bind:value={$name.value}
-          invalid={$name.invalid}
-          invalidText={$name.errors.join(", ")}
+          bind:store={name}
         />
         <Field
-          id="fullname"
-          labelText="User fullname"
+          type="text"
+          label="User fullname"
           placeholder="Enter user fullname..."
-          bind:value={$fullname.value}
-          invalid={$fullname.invalid}
-          invalidText={$fullname.errors.join(", ")}
+          bind:store={fullname}
         />
         <Field
-          id="email"
           type="email"
-          labelText="Email address"
+          label="Email address"
           placeholder="Enter email address..."
-          bind:value={$mail.value}
-          invalid={$mail.invalid}
-          invalidText={$mail.errors.join(", ")}
+          bind:store={mail}
         />
-        <Field id="password" type="password" labelText="Password" placeholder="Enter password..." bind:value={$password.value} invalid={$password.invalid} invalidText={$password.errors.join(", ")} />
-        <Field id="password2" type="password" labelText="Password Confirmation" placeholder="Enter password again..." bind:value={$passwordConfirmation.value} invalid={$passwordConfirmation.invalid} invalidText={$passwordConfirmation.errors.join(", ")} />
+        <Field
+          type="password"
+          label="Password"
+          placeholder="Enter password..."
+          bind:store={password}
+        />
+        <Field 
+          type="password"
+          label="Password Confirmation"
+          placeholder="Enter password again..."
+          bind:store={passwordConfirmation}
+        />
         <Button type="submit" disabled={!$loginForm.valid} >サインアップ</Button>
       </form>
     </div>

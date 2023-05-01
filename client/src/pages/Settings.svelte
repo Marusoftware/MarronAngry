@@ -9,9 +9,9 @@
     import AccountDelete from "../components/AccountDelete.svelte";
     import { user } from "../utils/store";
 
-    const name = field("name", $user.name, [required(), max(1024)]);
-    const fullname = field("fullname", $user.fullname, [max(1024)]);
-    const mail = field("email", $user.email, [required(), email(), max(1024)]);
+    let name = field("name", $user.name, [required(), max(1024)]);
+    let fullname = field("fullname", $user.fullname, [max(1024)]);
+    let mail = field("email", $user.email, [required(), email(), max(1024)]);
 
     const updateForm = form(
         name,
@@ -50,29 +50,22 @@
 <Heading>Settings</Heading>
 <form on:submit={submit} on:reset={reset}>
     <Field
-        id="name"
-        labelText="User name"
+        label="User name"
         placeholder="Enter user name..."
-        bind:value={$name.value}
+        bind:store={name}
         invalid={$name.invalid}
         invalidText={$name.errors.join(", ")}
     />
     <Field
-        id="fullname"
-        labelText="User fullname"
+        label="User fullname"
         placeholder="Enter user fullname..."
-        bind:value={$fullname.value}
-        invalid={$fullname.invalid}
-        invalidText={$fullname.errors.join(", ")}
+        bind:store={fullname}
     />
     <Field
-        id="email"
         type="email"
-        labelText="Email address"
+        label="Email address"
         placeholder="Enter email address..."
-        bind:value={$mail.value}
-        invalid={$mail.invalid}
-        invalidText={$mail.errors.join(", ")}
+        bind:store={mail}
     />
     <Button type="submit">更新</Button> <Button type="reset">リセット</Button>
 </form>

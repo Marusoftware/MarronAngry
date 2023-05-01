@@ -5,9 +5,9 @@
     import { tokens, userAPI } from "../utils";
     import Field from "./Field.svelte";
 
-    const oldpassword = field('oldpassword', '', [required()])
-    const password = field('password', '', [required()])
-    const passwordConfirmation = field('passwordConfirmation', '', [required(), matchField(password)])
+    let oldpassword = field('oldpassword', '', [required()])
+    let password = field('password', '', [required()])
+    let passwordConfirmation = field('passwordConfirmation', '', [required(), matchField(password)])
     const updateForm = form(oldpassword, password, passwordConfirmation)
 
     export let open = false;
@@ -48,8 +48,8 @@
     あなたのアカウントは外部のアカウント経由で作成されたため、パスワードが設定されておらず、サインインページでメールアドレスとパスワードを入力してのログインができないようになっています。
     ここでパスワードを設定すると、あなたのアカウントが通常のMarusoftwareアカウントとして利用できるようになります。
     <form on:submit={submit}>
-        <Field id="password2" type="password" labelText="New Password" placeholder="Enter password..." bind:value={$password.value} invalid={$password.invalid} invalidText={$password.errors.join(", ")} />
-        <Field id="password3" type="password" labelText="New Password Confirmation" placeholder="Enter password again..." bind:value={$passwordConfirmation.value} invalid={$passwordConfirmation.invalid} invalidText={$passwordConfirmation.errors.join(", ")} />
+        <Field type="password" label="New Password" placeholder="Enter password..." bind:store={password} />
+        <Field type="password" label="New Password Confirmation" placeholder="Enter password again..." bind:store={passwordConfirmation} />
     </form>
     <svelte:fragment slot="footer">
         <Button on:click={submit} disabled={!$updateForm.valid}>設定</Button>
@@ -59,9 +59,9 @@
 <Modal bind:open title="パスワードの変更">
     <Heading>現在のパスワードと新しいパスワードを入力してください。</Heading>
     <form on:submit={submit}>
-        <Field id="password" type="password" labelText="Old Password" placeholder="Enter old password..." bind:value={$oldpassword.value} invalid={$oldpassword.invalid} invalidText={$oldpassword.errors.join(", ")} />
-        <Field id="password2" type="password" labelText="New Password" placeholder="Enter password..." bind:value={$password.value} invalid={$password.invalid} invalidText={$password.errors.join(", ")} />
-        <Field id="password3" type="password" labelText="New Password Confirmation" placeholder="Enter password again..." bind:value={$passwordConfirmation.value} invalid={$passwordConfirmation.invalid} invalidText={$passwordConfirmation.errors.join(", ")} />
+        <Field type="password" label="Old Password" placeholder="Enter old password..." bind:store={oldpassword} />
+        <Field type="password" label="New Password" placeholder="Enter password..." bind:store={password} />
+        <Field type="password" label="New Password Confirmation" placeholder="Enter password again..." bind:store={passwordConfirmation} />
     </form>
     <svelte:fragment slot="footer">
         <Button on:click={submit} disabled={!$updateForm.valid}>変更</Button>
