@@ -36,6 +36,8 @@ async def sso_callback(request: Request, service:str):
     if res:
         org=await OrganizationDB.create(name=user.name, description=f"{user.name}'s Organization")
         await OrganizationMember.create(user=user, is_admin=True, organization=org)
+        user.fullname=user.name
+        await user.save()
     token=await TokenDB.create(token=secrets.token_hex(32), token_type=TokenType.bearer, user=user)
     if "users" not in request.session:
         request.session["users"]=[]
