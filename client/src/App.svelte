@@ -1,7 +1,6 @@
 <script lang="ts">
   import { 
     Navbar,
-    NavBrand,
     NavHamburger,
     NavUl,
     NavLi,
@@ -15,6 +14,7 @@
     Chevron,
     Radio
   } from "flowbite-svelte";
+  import NavBrand from "./components/NavBrand.svelte";
   import { Router, Route, navigate } from "svelte-routing";
   import { tokens, authAPI, destroyNotification, notifications, userAPI } from "./utils";
   import Home from "./pages/Home.svelte";
@@ -53,7 +53,7 @@
 
 <div class="bg-white dark:bg-gray-800 min-h-screen">
 <Navbar let:hidden let:toggle>
-  <NavBrand href="/">
+  <NavBrand on:click={()=>{navigate("/")}}>
     <img src="/marron.jpg" alt="Marron Logo" class="mr-3 h-6 sm:h-9" />
     <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Marron</span>
   </NavBrand>
