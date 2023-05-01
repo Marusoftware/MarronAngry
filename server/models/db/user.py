@@ -30,4 +30,4 @@ class OrganizationMember(Model):
     tasks:ManyToManyRelation["Task"]
 
 from .auth import Token
-from .task import Project, Task
+from .project import Project, Task
