@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from ..security import get_user
 
 from ..models.read.user import Member, Task
-from ..models.db import Project, Organization, OrganizationMember, User, Task as TaskDB
+from ..models.db import Project, OrganizationMember, User, Task as TaskDB
 from ..models.write import TaskCreate, TaskUpdate
 from datetime import datetime, timedelta
 
