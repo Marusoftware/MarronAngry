@@ -34,6 +34,9 @@
   async function signout() {
     await authAPI.authSignout()
     tokens.update((value)=> value.slice(1))
+    if(!$tokens.length){
+      location.href="/"
+    }
   }
 
   async function changeUser(token:string){
@@ -59,11 +62,11 @@
   </NavBrand>
   <div class="flex items-center md:order-2">
     {#if $tokens.length}
-      <Avatar id="avatar-menu" src="/images/profile-picture-3.webp" />
+      <Avatar id="avatar-menu" />
     {:else}
       <Button size="sm" on:click={() => navigate("/signin")} >サインイン</Button>
     {/if}
-    <DarkMode />
+    <DarkMode class="padding-1" />
     <NavHamburger on:click={toggle} class1="w-full md:flex md:w-auto md:order-1"/>
   </div>
   {#if $tokens.length}
@@ -82,7 +85,7 @@
         <DropdownItem>Getting user info...</DropdownItem>
         {:then user}
         <DropdownItem on:click={()=>{changeUser(token.accessToken)}}>
-          <Avatar src="/images/profile-picture-3.webp" size="xs" />{user.name}
+          <Avatar size="xs" />{user.name}
         </DropdownItem>
         {/await}
         {/if}
@@ -93,16 +96,6 @@
   </Dropdown>
   {/if}
   <NavUl {hidden}>
-    <NavLi id="organization" href="#" on:click={() => navigate("/organization")}>Organization</NavLi>
-    {#if $organizations}
-      <Dropdown  placement="bottom" triggeredBy="#organization">
-        {#each $organizations as org, i(org.id)}
-          <li>
-            <Radio name="organization-select" bind:group={organization} value={i}>{org.name}</Radio>
-          </li>
-        {/each}
-      </Dropdown>
-    {/if}
     <NavLi href="#" on:click={() => navigate("/project")}>Project</NavLi>
     <NavLi href="#" on:click={() => navigate("/task")}>Task</NavLi>
   </NavUl>

@@ -3,5 +3,7 @@
     import { user } from "../utils/store";
 </script>
 <Heading tag="h1">
-    Welcome to Marron, {$user.fullname}!
+    Welcome to Marron{#if $user}
+        , {$user.fullname}!
+    {/if}
 </Heading>
