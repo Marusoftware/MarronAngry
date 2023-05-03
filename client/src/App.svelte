@@ -60,15 +60,16 @@
     <img src="/marron.jpg" alt="Marron Logo" class="mr-3 h-6 sm:h-9" />
     <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Marron</span>
   </NavBrand>
-  <div class="flex items-center md:order-2">
+  <div class="flex items-center md:order-2 space-x-1">
     {#if $tokens.length}
       <Avatar id="avatar-menu" />
     {:else}
       <Button size="sm" on:click={() => navigate("/signin")} >サインイン</Button>
     {/if}
-    <DarkMode class="padding-1" />
     <NavHamburger on:click={toggle} class1="w-full md:flex md:w-auto md:order-1"/>
+    <DarkMode />
   </div>
+  
   {#if $tokens.length}
   <Dropdown placement="bottom" triggeredBy="#avatar-menu">
     <DropdownHeader>

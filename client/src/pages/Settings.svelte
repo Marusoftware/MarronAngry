@@ -67,6 +67,11 @@
         placeholder="Enter email address..."
         bind:store={mail}
     />
-    <Button type="submit">更新</Button> <Button type="reset">リセット</Button>
+    <div class="space-x-1"><Button type="submit">更新</Button><Button type="reset">リセット</Button></div>
+    
 </form>
-<Button on:click={()=>{passwordOpen=true}}>{#if $tokens[0].isSso}パスワードの設定(Marusoftwareアカウントへの移行){:else}パスワードの変更{/if}</Button> {#if !$tokens[0].isSso}<Button on:click={()=>{otpOpen=true}}>ワンタイムトークンの設定</Button>{/if} <Button on:click={()=>{deleteOpen=true}}>アカウントの削除</Button>
+<div class="py-1 space-x-1">
+<Button on:click={()=>{passwordOpen=true}}>{#if $tokens[0].isSso}パスワードの設定(Marusoftwareアカウントへの移行){:else}パスワードの変更{/if}</Button>
+{#if !$tokens[0].isSso}<Button on:click={()=>{otpOpen=true}}>ワンタイムトークンの設定</Button>{/if}
+<Button on:click={()=>{deleteOpen=true}}>アカウントの削除</Button>
+</div>
