@@ -12,7 +12,6 @@
     Button,
     DarkMode,
     Chevron,
-    Radio
   } from "flowbite-svelte";
   import NavBrand from "./components/NavBrand.svelte";
   import { Router, Route, navigate } from "svelte-routing";
@@ -21,22 +20,30 @@
   import Signin from "./pages/Signin.svelte";
   import Signup from "./pages/Signup.svelte";
   import Notification from "./components/Notification.svelte";
-  import { onMount } from "svelte";
   import Settings from "./pages/Settings.svelte";
   import { organizations, user } from "./utils/store";
   import Organization from "./pages/Organization.svelte";
   import Project from "./pages/Project.svelte";
   import Task from "./pages/Task.svelte";
+    import { onMount } from "svelte";
+    import ProjectSwitcher from "./components/ProjectSwitcher.svelte";
 
   onMount(async () => {
     tokens.set(await authAPI.authSession())
+    try{
+      logo=URL.createObjectURL(await userAPI.userMeLogo())
+    } catch(e){
+      logo=undefined
+    }
   })
+  let logo="";
   async function signout() {
     await authAPI.authSignout()
     tokens.update((value)=> value.slice(1))
     if(!$tokens.length){
       location.href="/"
     }
+    logo=undefined
   }
 
   async function changeUser(token:string){
@@ -44,14 +51,13 @@
       value.unshift(value.splice(value.findIndex((v)=>v.accessToken===token))[0])
       return value
     })
+    try{
+      logo=URL.createObjectURL(await userAPI.userMeLogo())
+    } catch(e){
+      logo=undefined
+    }
   }
 
-  let organization:number=0
-  function updateOrganizations(select:number) {
-    $organizations=[$organizations[select], ...$organizations.filter((value, index)=>index!==select)]
-    organization=0
-  }
-  $: updateOrganizations(organization)
 </script>
 
 <div class="bg-white dark:bg-gray-800 min-h-screen">
@@ -62,7 +68,9 @@
   </NavBrand>
   <div class="flex items-center md:order-2 space-x-1">
     {#if $tokens.length}
-      <Avatar id="avatar-menu" />
+      <div id="avatar-menu">
+        <Avatar src={logo} />
+      </div>
     {:else}
       <Button size="sm" on:click={() => navigate("/signin")} >サインイン</Button>
     {/if}
@@ -86,7 +94,11 @@
         <DropdownItem>Getting user info...</DropdownItem>
         {:then user}
         <DropdownItem on:click={()=>{changeUser(token.accessToken)}}>
+          {#await userAPI.userGetLogo({id:user.id}) then logo}
+          <Avatar size="xs" src={URL.createObjectURL(logo)} />{user.name}
+          {:catch}
           <Avatar size="xs" />{user.name}
+          {/await}
         </DropdownItem>
         {/await}
         {/if}
@@ -96,12 +108,12 @@
     <DropdownItem on:click={signout}>Sign out</DropdownItem>
   </Dropdown>
   {/if}
-  <NavUl {hidden}>
-    <NavLi href="#" on:click={() => navigate("/project")}>Project</NavLi>
-    <NavLi href="#" on:click={() => navigate("/task")}>Task</NavLi>
-  </NavUl>
 </Navbar>
 <Router>
+  <div class="flex">
+  {#if $tokens.length}
+        <ProjectSwitcher />
+  {/if}
   <main class="container p-10 dark:text-white mx-auto">
     {#if $notifications}
     <div class="absolute top-20 right-5 w-full max-w-xs z-50 isolation">
@@ -117,10 +129,13 @@
       <Signin username={params.username} />
     </Route>
     <Route path="/signup" component={Signup} />
-    <Route path="/settings" component={Settings} />
+    <Route path="/settings">
+      <Settings bind:logo />
+    </Route>
     <Route path="/organization" component={Organization} />
     <Route path="/project" component={Project} />
     <Route path="/task" component={Task} />
   </main>
+  </div>
 </Router>
 </div>

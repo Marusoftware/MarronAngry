@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from ...security import oauth, get_user
 from ...models.read.user import User, Token
 from ...models.write import UserCreate
-from ...models.db.user import User as UserDB, Organization as OrganizationDB, OrganizationMember
+from ...models.db.user import User as UserDB, Organization as OrganizationDB, OrganizationMember, Project as ProjectDB
 from ...models.db.auth import Token as TokenDB, TokenType
 import secrets
 from passlib.context import CryptContext
@@ -38,6 +38,7 @@ async def signup(user:UserCreate):
     user=await UserDB.create(name=user.name, fullname=user.fullname, email=user.email, password=crypt.hash(user.password), is_dev=False)
     org=await OrganizationDB.create(name=user.name, description=f"{user.name}'s Organization")
     await OrganizationMember.create(user=user, is_admin=True, organization=org)
+    await ProjectDB.create(name=user.name, description=f"{user.name}'s Profile", organization=org)
     return user
 
 @router.post("/signout")

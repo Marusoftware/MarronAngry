@@ -1,7 +1,7 @@
 import secrets
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
-from ...models.db import User as UserDB, Token as TokenDB, TokenType, Organization as OrganizationDB, OrganizationMember
+from ...models.db import User as UserDB, Token as TokenDB, TokenType, Organization as OrganizationDB, OrganizationMember, Project as ProjectDB
 from ...models.read.user import User
 
 config = Config('.env')  # read config from .env file
@@ -36,6 +36,7 @@ async def sso_callback(request: Request, service:str):
     if res:
         org=await OrganizationDB.create(name=user.name, description=f"{user.name}'s Organization")
         await OrganizationMember.create(user=user, is_admin=True, organization=org)
+        await ProjectDB.create(name=user.name, description=f"{user.name}'s Profile", organization=org)
         user.fullname=user.name
         await user.save()
     token=await TokenDB.create(token=secrets.token_hex(32), token_type=TokenType.bearer, user=user)

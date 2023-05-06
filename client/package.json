@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "openapi": "openapi-generator-cli generate -g typescript-fetch -i http://localhost:8000/openapi.json -o ./src/openapi"
+    "openapi": "openapi-generator-cli generate -g typescript-fetch -i http://localhost:8000/openapi.json -o ./src/openapi --skip-validate-spec"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.5.2",

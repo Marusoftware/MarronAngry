@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     postgres_password:str
     postgres_db:str
     mail:str
+    storage:str="./storage"
     
     class Config:
         env_file = ".env"

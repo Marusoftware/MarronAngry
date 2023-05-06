@@ -39,6 +39,14 @@ export interface UserGetRequest {
     id: string;
 }
 
+export interface UserGetLogoRequest {
+    id: string;
+}
+
+export interface UserSetLogoRequest {
+    image?: Blob;
+}
+
 export interface UserUpdateMeRequest {
     userUpdate: UserUpdate;
 }
@@ -114,6 +122,36 @@ export class UserApi extends runtime.BaseAPI {
     }
 
     /**
+     * Get Logo
+     */
+    async userGetLogoRaw(requestParameters: UserGetLogoRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling userGetLogo.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/user/logo/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.BlobApiResponse(response);
+    }
+
+    /**
+     * Get Logo
+     */
+    async userGetLogo(requestParameters: UserGetLogoRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.userGetLogoRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Me
      */
     async userMeRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
@@ -141,6 +179,89 @@ export class UserApi extends runtime.BaseAPI {
      */
     async userMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {
         const response = await this.userMeRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Me Logo
+     */
+    async userMeLogoRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/user/logo/me`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.BlobApiResponse(response);
+    }
+
+    /**
+     * Me Logo
+     */
+    async userMeLogo(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.userMeLogoRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Set Logo
+     */
+    async userSetLogoRaw(requestParameters: UserSetLogoRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters.image !== undefined) {
+            formParams.append('image', requestParameters.image as any);
+        }
+
+        const response = await this.request({
+            path: `/user/logo`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Set Logo
+     */
+    async userSetLogo(requestParameters: UserSetLogoRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+        const response = await this.userSetLogoRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

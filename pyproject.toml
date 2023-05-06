@@ -19,6 +19,7 @@ tortoise-orm = {extras = ["accel", "asyncpg"], version = "^0.19.2"}
 bcrypt = "^4.0.1"
 fastapi-socketio = "^0.0.9"
 aiosendgrid = {extras = ["helpers"], version = "^0.1.0"}
+aiofiles = "^23.1.0"
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.18.3"

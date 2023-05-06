@@ -11,6 +11,7 @@ class User(Model):
     password = CharField(max_length=1024, null=True, description="User password")
     otp_key = CharField(max_length=32, null=True, description="OTP Secret Key")
     otp_recovery = CharField(max_length=6, null=True, description="OTP Recovery Key")
+    logo=UUIDField(null=True, default=None)
     tokens:ReverseRelation["Token"]
     members:ReverseRelation["OrganizationMember"]
 

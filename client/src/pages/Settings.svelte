@@ -2,13 +2,15 @@
     import Field from "../components/Field.svelte";
     import { form, field } from "svelte-forms";
     import { email, max, required } from "svelte-forms/validators";
-    import { Button, Heading } from "flowbite-svelte";
+    import { Button, Fileupload, Heading, Helper, Label } from "flowbite-svelte";
     import { tokens, userAPI } from "../utils";
     import PasswordUpdate from "../components/PasswordUpdate.svelte";
     import OnetimeSetup from "../components/OnetimeSetup.svelte";
     import AccountDelete from "../components/AccountDelete.svelte";
     import { user } from "../utils/store";
 
+    export let logo: string | ArrayBuffer
+    let logo_file:FileList;
     let name = field("name", $user.name, [required(), max(1024)]);
     let fullname = field("fullname", $user.fullname, [max(1024)]);
     let mail = field("email", $user.email, [required(), email(), max(1024)]);
@@ -38,6 +40,11 @@
         updateForm.reset()
     }
 
+    async function updateLogo(e) {
+        await userAPI.userSetLogo({image:e.target.files[0]})
+        logo=URL.createObjectURL(e.target.files[0]);
+    }
+
     let passwordOpen=false
     let otpOpen=false
     let deleteOpen=false
@@ -48,6 +55,9 @@
 <AccountDelete bind:open={deleteOpen} />
 
 <Heading>Settings</Heading>
+<Label for="logo" class="pb-2">Upload logo</Label>
+<Fileupload id="logo" bind:files={logo_file} on:change={updateLogo} style="display:none" ></Fileupload>
+<Helper>PNG or JPG</Helper>
 <form on:submit={submit} on:reset={reset}>
     <Field
         label="User name"
@@ -68,7 +78,6 @@
         bind:store={mail}
     />
     <div class="space-x-1"><Button type="submit">更新</Button><Button type="reset">リセット</Button></div>
-    
 </form>
 <div class="py-1 space-x-1">
 <Button on:click={()=>{passwordOpen=true}}>{#if $tokens[0].isSso}パスワードの設定(Marusoftwareアカウントへの移行){:else}パスワードの変更{/if}</Button>

@@ -1,12 +1,41 @@
+from typing import Optional
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 from ..security import get_user
 from ..models.read.user import User, UserOpen
 from ..models.write import UserUpdate
-from ..models.db import User as UserDB
+from ..models.db import User as UserDB, Project as ProjectDB, File as FileDB
 from .auth.passwd import crypt
+from ..upload import upload
+import mimetypes, os
 
 router=APIRouter(tags=["user"])
+
+@router.put("/logo", response_model=bool)
+async def set_logo(user:UserDB=Depends(get_user), image:UploadFile=None):
+    if not image.content_type in ["image/png","image/jpeg"]:
+        raise HTTPException(500, "File type is not allowed.")
+    user.logo=(await upload(proj=await ProjectDB.get(name=user.name).prefetch_related("organization"), file=image, id=user.logo, filename=".logo"+os.path.splitext(image.filename)[1])).id
+    await user.save()
+    return True
+
+@router.get("/logo/me", response_class=FileResponse, responses={200: {"content": {"image/*": {"schema": {"type": "string", "format": "binary"}}}}})
+async def me_logo(user:UserDB=Depends(get_user)):
+    if user.logo is None:
+        raise HTTPException(404, "")
+    else:
+        path=(await FileDB.get(id=user.logo)).path
+        return FileResponse(path, media_type=mimetypes.guess_type(path)[0])
+
+@router.get("/logo/{id}", response_class=FileResponse, responses={200: {"content": {"image/*": {"schema": {"type": "string", "format": "binary"}}}}})
+async def get_logo(id:UUID):
+    user=await UserDB.get(id=id)
+    if user.logo is None:
+        raise HTTPException(404, "")
+    else:
+        path=(await FileDB.get(id=user.logo)).path
+        return FileResponse(path, media_type=mimetypes.guess_type(path)[0])
 
 @router.get("/me", response_model=User)
 async def me(user:UserDB=Depends(get_user)):
