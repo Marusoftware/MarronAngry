@@ -21,7 +21,7 @@
   }
 
   onMount(async () => {
-    await updateTable()
+    //await updateTable()
   })
 </script>
 

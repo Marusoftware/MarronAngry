@@ -2,8 +2,6 @@
   import { 
     Navbar,
     NavHamburger,
-    NavUl,
-    NavLi,
     Avatar,
     Dropdown,
     DropdownHeader,
@@ -21,19 +19,21 @@
   import Signup from "./pages/Signup.svelte";
   import Notification from "./components/Notification.svelte";
   import Settings from "./pages/Settings.svelte";
-  import { organizations, user } from "./utils/store";
+  import { user } from "./utils/store";
   import Organization from "./pages/Organization.svelte";
-  import Project from "./pages/Project.svelte";
+  import ProjectManage from "./pages/ProjectManage.svelte";
   import Task from "./pages/Task.svelte";
     import { onMount } from "svelte";
     import ProjectSwitcher from "./components/ProjectSwitcher.svelte";
 
   onMount(async () => {
     tokens.set(await authAPI.authSession())
-    try{
-      logo=URL.createObjectURL(await userAPI.userMeLogo())
-    } catch(e){
-      logo=undefined
+    if($tokens.length){
+      try{
+        logo=URL.createObjectURL(await userAPI.userMeLogo())
+      } catch(e){
+        logo=undefined
+      }
     }
   })
   let logo="";
@@ -48,7 +48,7 @@
 
   async function changeUser(token:string){
     tokens.update((value)=>{
-      value.unshift(value.splice(value.findIndex((v)=>v.accessToken===token))[0])
+      value.unshift(value.splice(value.findIndex((v)=>v.accessToken===token), 1)[0])
       return value
     })
     try{
@@ -133,8 +133,10 @@
       <Settings bind:logo />
     </Route>
     <Route path="/organization" component={Organization} />
-    <Route path="/project" component={Project} />
-    <Route path="/task" component={Task} />
+    <Route path="/project" component={ProjectManage} />
+    <Route path="/project/:pid" let:params>
+      <Task pid={params.pid} />
+    </Route>
   </main>
   </div>
 </Router>

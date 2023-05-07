@@ -4,8 +4,7 @@
     import { field, form } from "svelte-forms";
     import { pattern, required } from "svelte-forms/validators";
     import type { Task } from "../openapi";
-    import { projectAPI, taskAPI, userAPI } from "../utils";
-    import { organizations } from "../utils/store";
+    import { taskAPI, userAPI } from "../utils";
     import Field from "./Field.svelte";
     const dispatch=createEventDispatcher()
 
@@ -16,17 +15,8 @@
     const updateForm = form(name, description)
     let member=field("member","",[pattern(/([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})/)])
     const memberForm = form(member)
-    let projects=[]
 
     export let open = false;
-
-    async function onOpen(open:boolean) {
-        if(open){
-            projects=(await projectAPI.projectGet({orgId:$organizations[0].id})).map((value)=>{return {name:value.name, value:value.id}})
-            task.projectId=projects[0].value
-        }
-    }
-    $: onOpen(open)
 
     $:{
         $name.value=task.name
@@ -92,9 +82,6 @@
         <Field type="text" label="Name" placeholder="Enter name..." bind:store={name} />
         <Field type="text" label="Description" placeholder="Enter description..." bind:store={description} />
         <Field type="datetime-local" label="Date" placeholder="Enter Date..." bind:store={date} />
-        <Label>Project
-            <Select class="mt-2" items={projects} bind:value={task.projectId} />
-        </Label>
     </form>
     {#if task.id}
     <Table>

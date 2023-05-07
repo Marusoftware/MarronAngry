@@ -38,7 +38,7 @@
                 }
             })
         }
-        
+        open=false
     }
 
 </script>

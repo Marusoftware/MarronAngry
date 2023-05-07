@@ -1,13 +1,10 @@
 version: '3.7'
 services:
   server:
-    image: marusoftware/marron:server-latest
+    image: marusoftware/marron:latest
     stop_signal: SIGINT
     ports:
-      - "8000:8000"
-    volumes:
-      - ./server:/usr/src/app/server
-      - ./migrations:/usr/src/app/migrations
+      - "5000:5000"
     env_file:
       - .env
     depends_on:
@@ -19,15 +16,6 @@ services:
       - postgres:/var/lib/postgresql/data
     env_file:
       - .env
-    ports:
-      - "5432:5432"
-  client:
-    image: marusoftware/marron:client-latest
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./client:/app
-    init: true
 
 volumes:
   postgres:

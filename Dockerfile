@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir --upgrade poetry && \
 
 EXPOSE 8000
 
-CMD poetry run aerich upgrade && poetry run uvicorn server:app --reload --host 0.0.0.0 --root-path=/api/v1
+CMD poetry run aerich upgrade && poetry run uvicorn server:app --reload --host 0.0.0.0 --port 8000 --root-path=/api/v1

@@ -10,21 +10,20 @@
     TableHeadCell,
   } from "flowbite-svelte";
   import Task from "../components/Task.svelte";
-  import { tokens, projectAPI, taskAPI } from "../utils";
-  import type { Task as TaskModel, Project } from "../openapi"
+  import { taskAPI } from "../utils";
+  import type { Task as TaskModel } from "../openapi"
   import { onMount } from "svelte";
-  import { organizations } from "../utils/store";
   let open = false;
   let taskModal:TaskModel={id:"", name:"", description:"", projectId:"", time:new Date(), members:[]}
   let tasks:TaskModel[]=[]
+  export let pid:string;
 
-  async function updateTable() {
-    tasks=[];
-    (await projectAPI.projectGet({orgId:$organizations[0].id})).forEach(async (project:Project) => {
-      tasks=[...tasks, ...await taskAPI.taskGet({prjId:project.id})]
-    })
+  async function updateTable(stub=undefined) {
+    tasks=await taskAPI.taskGet({prjId:pid})
   }
 
+  $: updateTable(pid).then()
+  
   onMount(async () => {
     await updateTable()
   })
@@ -36,7 +35,7 @@
 <Heading tag="h2">Your Task</Heading>
 <Button
   on:click={() => {
-    taskModal = {id:"", name:"", description:"", projectId:"", time:new Date(), members:[]};
+    taskModal = {id:"", name:"", description:"", projectId:pid, time:new Date(), members:[]};
     open = true;
   }}>Add Task</Button
 ><br />

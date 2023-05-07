@@ -1,0 +1,27 @@
+FROM  --platform=$BUILDPLATFORM node:16-alpine3.17 as build
+
+WORKDIR /app
+
+COPY ./client .
+
+RUN yarn install --frozen-lockfile
+RUN yarn build
+
+FROM python:3.10.9-slim
+
+WORKDIR /usr/src/app
+
+COPY ./server ./server
+COPY ./migrations ./migrations
+COPY ./pyproject.toml ./
+
+RUN pip install --no-cache-dir --upgrade poetry && \
+    poetry install --no-cache
+
+EXPOSE 5000
+
+COPY --from=build --chown=nobody:nobody /app/dist /usr/src/app/client
+ENV static_web=client/
+ENV fixed_root=true
+
+CMD poetry run aerich upgrade && poetry run uvicorn server:app --host 0.0.0.0 --port 5000

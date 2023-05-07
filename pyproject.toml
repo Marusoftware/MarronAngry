@@ -15,7 +15,7 @@ passlib = "^1.7.4"
 httpx = "^0.23.0"
 itsdangerous = "^2.1.2"
 Authlib = "^1.2.0"
-tortoise-orm = {extras = ["accel", "asyncpg"], version = "^0.19.2"}
+tortoise-orm = {extras = ["asyncpg"], version = "^0.19.2"}
 bcrypt = "^4.0.1"
 fastapi-socketio = "^0.0.9"
 aiosendgrid = {extras = ["helpers"], version = "^0.1.0"}

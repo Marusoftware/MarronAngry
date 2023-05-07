@@ -2,14 +2,15 @@
     import Field from "../components/Field.svelte";
     import { form, field } from "svelte-forms";
     import { email, max, required } from "svelte-forms/validators";
-    import { Button, Fileupload, Heading, Helper, Label } from "flowbite-svelte";
+    import { Avatar, Button, Fileupload, Heading, Helper, Label } from "flowbite-svelte";
     import { tokens, userAPI } from "../utils";
     import PasswordUpdate from "../components/PasswordUpdate.svelte";
     import OnetimeSetup from "../components/OnetimeSetup.svelte";
     import AccountDelete from "../components/AccountDelete.svelte";
     import { user } from "../utils/store";
 
-    export let logo: string | ArrayBuffer
+    export let logo
+    let upload
     let logo_file:FileList;
     let name = field("name", $user.name, [required(), max(1024)]);
     let fullname = field("fullname", $user.fullname, [max(1024)]);
@@ -55,16 +56,17 @@
 <AccountDelete bind:open={deleteOpen} />
 
 <Heading>Settings</Heading>
-<Label for="logo" class="pb-2">Upload logo</Label>
-<Fileupload id="logo" bind:files={logo_file} on:change={updateLogo} style="display:none" ></Fileupload>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div on:click={upload.click()}>
+    <Avatar src={logo} size="lg" />
+</div>
+<input id="logo" type="file" bind:files={logo_file} on:change={updateLogo} style="display:none" bind:this={upload} />
 <Helper>PNG or JPG</Helper>
 <form on:submit={submit} on:reset={reset}>
     <Field
         label="User name"
         placeholder="Enter user name..."
         bind:store={name}
-        invalid={$name.invalid}
-        invalidText={$name.errors.join(", ")}
     />
     <Field
         label="User fullname"

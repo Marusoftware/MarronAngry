@@ -18,10 +18,11 @@
     let projectModal:ProjectModel={id:"", name:"", description:"", organizationId:"", members:[]}
     let projects:ProjectModel[]=[]
   
-    async function updateTable() {
+    async function updateTable(stub=undefined) {
       projects=await projectAPI.projectGet({orgId:$organizations[0].id})
     }
-  
+
+    $: updateTable($organizations).then()
     onMount(async () => {
       await updateTable()
     })

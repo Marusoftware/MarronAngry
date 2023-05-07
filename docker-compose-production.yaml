@@ -2,7 +2,7 @@ version: '3.7'
 services:
   server:
     build:
-      context: ./client
+      context: .
       dockerfile: ./Dockerfile_production
     stop_signal: SIGINT
     env_file:
