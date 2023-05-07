@@ -37,6 +37,9 @@
     }
   })
   let logo="";
+
+  tokens.subscribe(async (tokens)=>{ if(tokens.length){logo=URL.createObjectURL(await userAPI.userMeLogo()) }})
+
   async function signout() {
     await authAPI.authSignout()
     tokens.update((value)=> value.slice(1))
