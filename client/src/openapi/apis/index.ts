@@ -1,6 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from './AuthApi';
+export * from './DefaultApi';
+export * from './IdeaApi';
 export * from './OrganizationApi';
 export * from './ProjectApi';
 export * from './TaskApi';

@@ -1,6 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from './HTTPValidationError';
+export * from './Idea';
+export * from './IdeaCreate';
+export * from './IdeaUpdate';
 export * from './LocationInner';
 export * from './Member';
 export * from './OTPCreate';

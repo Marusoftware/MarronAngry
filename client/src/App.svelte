@@ -22,7 +22,7 @@
   import { user } from "./utils/store";
   import Organization from "./pages/Organization.svelte";
   import ProjectManage from "./pages/ProjectManage.svelte";
-  import Task from "./pages/Task.svelte";
+  import Project from "./pages/Project.svelte";
     import { onMount } from "svelte";
     import ProjectSwitcher from "./components/ProjectSwitcher.svelte";
 
@@ -135,7 +135,7 @@
     <Route path="/organization" component={Organization} />
     <Route path="/project" component={ProjectManage} />
     <Route path="/project/:pid" let:params>
-      <Task pid={params.pid} />
+      <Project pid={params.pid} />
     </Route>
   </main>
   </div>

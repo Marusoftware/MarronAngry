@@ -47,3 +47,9 @@ class Task(BaseModel):
     project_id:UUID
     time:datetime
     members:List[Member]
+
+class Idea(BaseModel):
+    id:UUID
+    name:str
+    description:str
+    project_id:UUID

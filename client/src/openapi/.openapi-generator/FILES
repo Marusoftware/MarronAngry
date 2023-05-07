@@ -1,4 +1,6 @@
 apis/AuthApi.ts
+apis/DefaultApi.ts
+apis/IdeaApi.ts
 apis/OrganizationApi.ts
 apis/ProjectApi.ts
 apis/TaskApi.ts
@@ -6,6 +8,9 @@ apis/UserApi.ts
 apis/index.ts
 index.ts
 models/HTTPValidationError.ts
+models/Idea.ts
+models/IdeaCreate.ts
+models/IdeaUpdate.ts
 models/LocationInner.ts
 models/Member.ts
 models/OTPCreate.ts

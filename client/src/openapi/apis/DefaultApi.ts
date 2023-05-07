@@ -16,36 +16,14 @@
 import * as runtime from '../runtime';
 import type {
   HTTPValidationError,
-  Project,
-  ProjectCreate,
-  ProjectUpdate,
 } from '../models';
 import {
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-    ProjectFromJSON,
-    ProjectToJSON,
-    ProjectCreateFromJSON,
-    ProjectCreateToJSON,
-    ProjectUpdateFromJSON,
-    ProjectUpdateToJSON,
 } from '../models';
 
-export interface DeleteRequest {
-    projId: string;
-}
-
-export interface CreateRequest {
-    projectCreate: ProjectCreate;
-}
-
-export interface GetRequest {
-    orgId: string;
-}
-
-export interface UpdateRequest {
-    projId: string;
-    projectUpdate: ProjectUpdate;
+export interface SpaRequest {
+    fullPath: string;
 }
 
 /**
@@ -54,156 +32,32 @@ export interface UpdateRequest {
 export class DefaultApi extends runtime.BaseAPI {
 
     /**
-     * Delete
+     * Spa
      */
-    async _deleteRaw(requestParameters: DeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
-        if (requestParameters.projId === null || requestParameters.projId === undefined) {
-            throw new runtime.RequiredError('projId','Required parameter requestParameters.projId was null or undefined when calling _delete.');
+    async spaRaw(requestParameters: SpaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.fullPath === null || requestParameters.fullPath === undefined) {
+            throw new runtime.RequiredError('fullPath','Required parameter requestParameters.fullPath was null or undefined when calling spa.');
         }
 
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
-        }
-
         const response = await this.request({
-            path: `/project/{proj_id}`.replace(`{${"proj_id"}}`, encodeURIComponent(String(requestParameters.projId))),
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.TextApiResponse(response) as any;
-    }
-
-    /**
-     * Delete
-     */
-    async _delete(requestParameters: DeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this._deleteRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Create
-     */
-    async createRaw(requestParameters: CreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Project>> {
-        if (requestParameters.projectCreate === null || requestParameters.projectCreate === undefined) {
-            throw new runtime.RequiredError('projectCreate','Required parameter requestParameters.projectCreate was null or undefined when calling create.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
-        }
-
-        const response = await this.request({
-            path: `/project/`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: ProjectCreateToJSON(requestParameters.projectCreate),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ProjectFromJSON(jsonValue));
-    }
-
-    /**
-     * Create
-     */
-    async create(requestParameters: CreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Project> {
-        const response = await this.createRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Get
-     */
-    async getRaw(requestParameters: GetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Project>>> {
-        if (requestParameters.orgId === null || requestParameters.orgId === undefined) {
-            throw new runtime.RequiredError('orgId','Required parameter requestParameters.orgId was null or undefined when calling get.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.orgId !== undefined) {
-            queryParameters['org_id'] = requestParameters.orgId;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
-        }
-
-        const response = await this.request({
-            path: `/project/`,
+            path: `/{full_path}`.replace(`{${"full_path"}}`, encodeURIComponent(String(requestParameters.fullPath))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ProjectFromJSON));
-    }
-
-    /**
-     * Get
-     */
-    async get(requestParameters: GetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Project>> {
-        const response = await this.getRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Update
-     */
-    async updateRaw(requestParameters: UpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
-        if (requestParameters.projId === null || requestParameters.projId === undefined) {
-            throw new runtime.RequiredError('projId','Required parameter requestParameters.projId was null or undefined when calling update.');
-        }
-
-        if (requestParameters.projectUpdate === null || requestParameters.projectUpdate === undefined) {
-            throw new runtime.RequiredError('projectUpdate','Required parameter requestParameters.projectUpdate was null or undefined when calling update.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
-        }
-
-        const response = await this.request({
-            path: `/project/{proj_id}`.replace(`{${"proj_id"}}`, encodeURIComponent(String(requestParameters.projId))),
-            method: 'PATCH',
-            headers: headerParameters,
-            query: queryParameters,
-            body: ProjectUpdateToJSON(requestParameters.projectUpdate),
-        }, initOverrides);
-
         return new runtime.TextApiResponse(response) as any;
     }
 
     /**
-     * Update
+     * Spa
      */
-    async update(requestParameters: UpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.updateRaw(requestParameters, initOverrides);
+    async spa(requestParameters: SpaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.spaRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

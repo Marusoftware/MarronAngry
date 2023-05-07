@@ -48,3 +48,13 @@ class TaskUpdate(TaskCreate):
     description:str=None
     time:datetime=None
     project_id:UUID=None
+
+class IdeaCreate(BaseModel):
+    name:str
+    description:str
+    project_id:UUID
+
+class IdeaUpdate(IdeaCreate):
+    name:str=None
+    description:str=None
+    project_id:UUID=None
