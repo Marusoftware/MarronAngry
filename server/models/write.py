@@ -40,13 +40,15 @@ class ProjectUpdate(ProjectCreate):
 class TaskCreate(BaseModel):
     name:str
     description:str
-    time:datetime
+    start:datetime
+    end:datetime
     project_id:UUID
 
 class TaskUpdate(TaskCreate):
     name:str=None
     description:str=None
-    time:datetime=None
+    start:datetime=None
+    end:datetime=None
     project_id:UUID=None
 
 class IdeaCreate(BaseModel):

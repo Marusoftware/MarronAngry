@@ -18,6 +18,7 @@ class User(Model):
 class Organization(Model):
     id = UUIDField(pk=True, description="Organization ID")
     name = CharField(max_length=1024, description="Organization Name")
+    logo=UUIDField(null=True, default=None)
     description = CharField(max_length=2048, default="", description="Organization description")
     members:ReverseRelation["OrganizationMember"]
     projects: ReverseRelation["Project"]

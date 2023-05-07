@@ -13,3 +13,5 @@ from .task import router as task
 router.include_router(task, prefix="/task")
 from .idea import router as idea
 router.include_router(idea, prefix="/idea")
+from .file import router as file
+router.include_router(file, prefix="/file")

@@ -1,5 +1,6 @@
 apis/AuthApi.ts
 apis/DefaultApi.ts
+apis/FileApi.ts
 apis/IdeaApi.ts
 apis/OrganizationApi.ts
 apis/ProjectApi.ts

@@ -5,8 +5,11 @@ from fastapi import APIRouter, HTTPException, Depends
 from ..security import get_user
 
 from ..models.read.user import Project, Member
-from ..models.db import Project as ProjectDB, Organization, OrganizationMember, User
+from ..models.db import Project as ProjectDB, Organization, OrganizationMember, User, File
 from ..models.write import ProjectCreate, ProjectUpdate
+from ..config import Settings
+config=Settings()
+import os, aiofiles.os
 
 router=APIRouter(tags=["project"])
 
@@ -24,6 +27,11 @@ async def create(project:ProjectCreate, user:User=Depends(get_user)):
     if member is None:
         raise HTTPException(status_code=400, detail="No permission to do it.")
     project_db=await ProjectDB.create(name=project.name, description=project.description, organization=org)
+    path=os.path.join(config.storage, str(project.organization_id), str(project_db.id))
+    file=await File.create(is_dir=False, path=path, size=0, project=project_db)
+    project_db.default_storage=file.id
+    await project_db.save()
+    await aiofiles.os.makedirs(path, exist_ok=True)
     await project_db.members.add(member)
     return {**dict(project_db), "organization_id":project.organization_id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=user.id)]}
 

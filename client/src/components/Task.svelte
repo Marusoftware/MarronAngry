@@ -8,11 +8,12 @@
     import Field from "./Field.svelte";
     const dispatch=createEventDispatcher()
 
-    export let task:Task={id:"", name:"", description:"", projectId:"", time:new Date(), members:[]}
+    export let task:Task={id:"", name:"", description:"", projectId:"", start:new Date(), end:new Date(), members:[]}
     let name = field('name', "", [required()])
     let description = field('description', "", [required()])
-    let date = field('description', "", [required()])
-    const updateForm = form(name, description)
+    let date = field('date', "", [required()])
+    let date2 = field('date2', "", [required()])
+    const updateForm = form(name, description, date, date2)
     let member=field("member","",[pattern(/([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})/)])
     const memberForm = form(member)
 
@@ -21,7 +22,8 @@
     $:{
         $name.value=task.name
         $description.value=task.description
-        $date.value=task.time.toISOString().slice(0, 16)
+        $date.value=task.start.toISOString().slice(0, 16)
+        $date2.value=task.start.toISOString().slice(0, 16)
     }
     async function submit(e:Event){
         e.preventDefault()
@@ -36,7 +38,8 @@
                     name:$name.value,
                     description:$description.value,
                     projectId:task.projectId,
-                    time:new Date($date.value)
+                    start:new Date($date.value),
+                    end:new Date($date2.value)
                 }
             })
             open=false
@@ -46,7 +49,8 @@
                     name:$name.value,
                     description:$description.value,
                     projectId:task.projectId,
-                    time:new Date($date.value)
+                    start:new Date($date.value),
+                    end:new Date($date2.value)
                 }
             })
         }
@@ -81,7 +85,8 @@
     <form on:submit={submit}>
         <Field type="text" label="Name" placeholder="Enter name..." bind:store={name} />
         <Field type="text" label="Description" placeholder="Enter description..." bind:store={description} />
-        <Field type="datetime-local" label="Date" placeholder="Enter Date..." bind:store={date} />
+        <Field type="datetime-local" label="Start Date" placeholder="Enter Date..." bind:store={date} />
+        <Field type="datetime-local" label="End Date" placeholder="Enter Date..." bind:store={date2} />
     </form>
     {#if task.id}
     <Table>

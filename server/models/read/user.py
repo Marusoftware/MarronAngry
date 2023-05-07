@@ -45,7 +45,8 @@ class Task(BaseModel):
     name:str
     description:str
     project_id:UUID
-    time:datetime
+    start:datetime
+    end:datetime
     members:List[Member]
 
 class Idea(BaseModel):

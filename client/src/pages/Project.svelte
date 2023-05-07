@@ -19,7 +19,7 @@
     import Idea from "../components/Idea.svelte";
   let open = false;
   let open2 = false;
-  let taskModal:TaskModel={id:"", name:"", description:"", projectId:"", time:new Date(), members:[]}
+  let taskModal:TaskModel={id:"", name:"", description:"", projectId:"", start:new Date(), end:new Date(), members:[]}
   let ideaModal:IdeaModel={id:"", name:"", description:"", projectId:""}
   let tasks:TaskModel[]=[]
   let ideas:IdeaModel[]=[]
@@ -52,7 +52,7 @@
   <TabItem title="Task" open>
     <Button
   on:click={() => {
-    taskModal = {id:"", name:"", description:"", projectId:pid, time:new Date(), members:[]};
+    taskModal = {id:"", name:"", description:"", projectId:pid, start:new Date(), end:new Date(), members:[]};
     open = true;
   }}>Add Task</Button
 ><br />
@@ -60,7 +60,8 @@
   <TableHead>
     <TableHeadCell>Name</TableHeadCell>
     <TableHeadCell>Description</TableHeadCell>
-    <TableHeadCell>Time</TableHeadCell>
+    <TableHeadCell>Start Time</TableHeadCell>
+    <TableHeadCell>End Time</TableHeadCell>
     <TableHeadCell />
   </TableHead>
   <TableBody>
@@ -68,7 +69,8 @@
       <TableBodyRow>
         <TableBodyCell>{task.name}</TableBodyCell>
         <TableBodyCell>{task.description}</TableBodyCell>
-        <TableBodyCell>{task.time}</TableBodyCell>
+        <TableBodyCell>{task.start}</TableBodyCell>
+        <TableBodyCell>{task.end}</TableBodyCell>
         <TableBodyCell>
           <Button
             on:click={() => {
@@ -96,7 +98,6 @@
   <TableHead>
     <TableHeadCell>Name</TableHeadCell>
     <TableHeadCell>Description</TableHeadCell>
-    <TableHeadCell>Time</TableHeadCell>
     <TableHeadCell />
   </TableHead>
   <TableBody>

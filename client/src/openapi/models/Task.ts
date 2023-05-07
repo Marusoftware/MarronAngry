@@ -55,7 +55,13 @@ export interface Task {
      * @type {Date}
      * @memberof Task
      */
-    time: Date;
+    start: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof Task
+     */
+    end: Date;
     /**
      * 
      * @type {Array<Member>}
@@ -73,7 +79,8 @@ export function instanceOfTask(value: object): boolean {
     isInstance = isInstance && "name" in value;
     isInstance = isInstance && "description" in value;
     isInstance = isInstance && "projectId" in value;
-    isInstance = isInstance && "time" in value;
+    isInstance = isInstance && "start" in value;
+    isInstance = isInstance && "end" in value;
     isInstance = isInstance && "members" in value;
 
     return isInstance;
@@ -93,7 +100,8 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         'name': json['name'],
         'description': json['description'],
         'projectId': json['project_id'],
-        'time': (new Date(json['time'])),
+        'start': (new Date(json['start'])),
+        'end': (new Date(json['end'])),
         'members': ((json['members'] as Array<any>).map(MemberFromJSON)),
     };
 }
@@ -111,7 +119,8 @@ export function TaskToJSON(value?: Task | null): any {
         'name': value.name,
         'description': value.description,
         'project_id': value.projectId,
-        'time': (value.time.toISOString()),
+        'start': (value.start.toISOString()),
+        'end': (value.end.toISOString()),
         'members': ((value.members as Array<any>).map(MemberToJSON)),
     };
 }

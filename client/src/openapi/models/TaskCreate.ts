@@ -36,7 +36,13 @@ export interface TaskCreate {
      * @type {Date}
      * @memberof TaskCreate
      */
-    time: Date;
+    start: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof TaskCreate
+     */
+    end: Date;
     /**
      * 
      * @type {string}
@@ -52,7 +58,8 @@ export function instanceOfTaskCreate(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "name" in value;
     isInstance = isInstance && "description" in value;
-    isInstance = isInstance && "time" in value;
+    isInstance = isInstance && "start" in value;
+    isInstance = isInstance && "end" in value;
     isInstance = isInstance && "projectId" in value;
 
     return isInstance;
@@ -70,7 +77,8 @@ export function TaskCreateFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'name': json['name'],
         'description': json['description'],
-        'time': (new Date(json['time'])),
+        'start': (new Date(json['start'])),
+        'end': (new Date(json['end'])),
         'projectId': json['project_id'],
     };
 }
@@ -86,7 +94,8 @@ export function TaskCreateToJSON(value?: TaskCreate | null): any {
         
         'name': value.name,
         'description': value.description,
-        'time': (value.time.toISOString()),
+        'start': (value.start.toISOString()),
+        'end': (value.end.toISOString()),
         'project_id': value.projectId,
     };
 }

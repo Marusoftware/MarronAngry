@@ -8,7 +8,8 @@ class Project(Model):
     description=CharField(max_length=2048, default="", description="Project description")
     members:ManyToManyRelation["OrganizationMember"]=ManyToManyField("models.OrganizationMember", related_name="projects", on_delete=fields.CASCADE)
     organization:ForeignKeyRelation["Organization"]=ForeignKeyField("models.Organization", related_name="projects", on_delete=fields.CASCADE)
-    logo=UUIDField(null=True)
+    default_storage=UUIDField(null=True, default=None)
+    logo=UUIDField(null=True, default=None)
     tasks:ReverseRelation["Task"]
     ideas:ReverseRelation["Idea"]
     files:ReverseRelation["File"]
@@ -17,7 +18,8 @@ class Task(Model):
     id=UUIDField(pk=True, description="Task ID")
     name=CharField(max_length=1024, description="Task name")
     description=TextField(default="", description="Task description")
-    time=DatetimeField(auto_now_add=True, description="When will task finish?")
+    start=DatetimeField(auto_now_add=True, description="When will task start?")
+    end=DatetimeField(auto_now_add=True, description="When will task finish?")
     members:ManyToManyRelation["OrganizationMember"]=ManyToManyField("models.OrganizationMember", related_name="tasks", on_delete=fields.CASCADE)
     project:ForeignKeyRelation[Project]= ForeignKeyField("models.Project", related_name="tasks", on_delete=fields.CASCADE)
 

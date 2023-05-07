@@ -36,7 +36,13 @@ export interface TaskUpdate {
      * @type {Date}
      * @memberof TaskUpdate
      */
-    time?: Date;
+    start?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof TaskUpdate
+     */
+    end?: Date;
     /**
      * 
      * @type {string}
@@ -66,7 +72,8 @@ export function TaskUpdateFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'name': !exists(json, 'name') ? undefined : json['name'],
         'description': !exists(json, 'description') ? undefined : json['description'],
-        'time': !exists(json, 'time') ? undefined : (new Date(json['time'])),
+        'start': !exists(json, 'start') ? undefined : (new Date(json['start'])),
+        'end': !exists(json, 'end') ? undefined : (new Date(json['end'])),
         'projectId': !exists(json, 'project_id') ? undefined : json['project_id'],
     };
 }
@@ -82,7 +89,8 @@ export function TaskUpdateToJSON(value?: TaskUpdate | null): any {
         
         'name': value.name,
         'description': value.description,
-        'time': value.time === undefined ? undefined : (value.time.toISOString()),
+        'start': value.start === undefined ? undefined : (value.start.toISOString()),
+        'end': value.end === undefined ? undefined : (value.end.toISOString()),
         'project_id': value.projectId,
     };
 }

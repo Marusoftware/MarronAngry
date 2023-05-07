@@ -57,7 +57,6 @@ export interface TaskGetRequest {
 }
 
 export interface TaskNearRequest {
-    query: string;
     prjId: string;
 }
 
@@ -273,19 +272,11 @@ export class TaskApi extends runtime.BaseAPI {
      * Near
      */
     async taskNearRaw(requestParameters: TaskNearRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
-        if (requestParameters.query === null || requestParameters.query === undefined) {
-            throw new runtime.RequiredError('query','Required parameter requestParameters.query was null or undefined when calling taskNear.');
-        }
-
         if (requestParameters.prjId === null || requestParameters.prjId === undefined) {
             throw new runtime.RequiredError('prjId','Required parameter requestParameters.prjId was null or undefined when calling taskNear.');
         }
 
         const queryParameters: any = {};
-
-        if (requestParameters.query !== undefined) {
-            queryParameters['query'] = requestParameters.query;
-        }
 
         if (requestParameters.prjId !== undefined) {
             queryParameters['prj_id'] = requestParameters.prjId;

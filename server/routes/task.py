@@ -16,7 +16,7 @@ async def get(prj_id:UUID, user:User=Depends(get_user)):
     prj=await Project.get(id=prj_id).prefetch_related("organization")
     if not await OrganizationMember.exists(organization=prj.organization, user=user):
         raise HTTPException(status_code=400, detail="No permission to do it.")
-    return [{"id":task.id, "name":task.name, "description":task.description, "time":task.time, "project_id":prj.id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=member.user.id) for member in await OrganizationMember.filter(organization=prj.organization).prefetch_related("tasks", "user") if task in member.tasks]} for task in await TaskDB.filter(project=prj)]
+    return [{"id":task.id, "name":task.name, "description":task.description, "start":task.start, "end":task.end, "project_id":prj.id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=member.user.id) for member in await OrganizationMember.filter(organization=prj.organization).prefetch_related("tasks", "user") if task in member.tasks]} for task in await TaskDB.filter(project=prj)]
 
 @router.post("/", response_model=Task)
 async def create(task:TaskCreate, user:User=Depends(get_user)):
@@ -64,9 +64,9 @@ async def delete(task_id:UUID, user:User=Depends(get_user)):
     await task.delete()
 
 @router.get("/near")
-async def near(query:str, prj_id:UUID, user:User=Depends(get_user)):
+async def near(prj_id:UUID, user:User=Depends(get_user)):
     prj=await Project.get(id=prj_id).prefetch_related("organization")
     if not await OrganizationMember.exists(organization=prj.organization, user=user):
         raise HTTPException(status_code=400, detail="No permission to do it.")
-    date=datetime()+timedelta(weeks=1)
-    return [{"id":task.id, "name":task.name, "description":task.description, "time":task.time, "project_id":prj.id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=member.user.id) for member in await OrganizationMember.filter(organization=prj.organization).prefetch_related("tasks", "user") if task in member.tasks]} for task in await TaskDB.filter(project=prj, time__lte=date)]
+    date=datetime.now()+timedelta(weeks=1)
+    return [{"id":task.id, "name":task.name, "description":task.description, "start":task.start, "end":task.end, "project_id":prj.id, "members":[Member(id=member.id, is_admin=member.is_admin, user_id=member.user.id) for member in await OrganizationMember.filter(organization=prj.organization).prefetch_related("tasks", "user") if task in member.tasks]} for task in await TaskDB.filter(project=prj, end__lte=date)]
