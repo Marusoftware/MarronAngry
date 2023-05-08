@@ -1,6 +1,6 @@
 from fastapi import APIRouter, FastAPI
 from fastapi.responses import FileResponse
-from fastapi_responses import custom_openapi
+#from fastapi_responses import custom_openapi
 from fastapi_socketio import SocketManager
 import os
 
