@@ -6,8 +6,11 @@ from ...models.read.user import User, Token
 from ...models.write import UserCreate
 from ...models.db.user import User as UserDB, Organization as OrganizationDB, OrganizationMember, Project as ProjectDB
 from ...models.db.auth import Token as TokenDB, TokenType
-import secrets
+from ...models.db.project import File
+import secrets, os, aiofiles.os
 from passlib.context import CryptContext
+from ...config import Settings
+config=Settings()
 
 from tortoise.expressions import Q
 
@@ -38,7 +41,12 @@ async def signup(user:UserCreate):
     user=await UserDB.create(name=user.name, fullname=user.fullname, email=user.email, password=crypt.hash(user.password), is_dev=False)
     org=await OrganizationDB.create(name=user.name, description=f"{user.name}'s Organization")
     await OrganizationMember.create(user=user, is_admin=True, organization=org)
-    await ProjectDB.create(name=user.name, description=f"{user.name}'s Profile", organization=org)
+    prj=await ProjectDB.create(name=user.name, description=f"{user.name}'s Profile", organization=org)
+    path=os.path.join(config.storage, str(org.id), str(prj.id))
+    file=await File.create(is_dir=False, path=path, size=0, project=prj)
+    prj.default_storage=file.id
+    await prj.save()
+    await aiofiles.os.makedirs(path, exist_ok=True)
     return user
 
 @router.post("/signout")

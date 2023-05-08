@@ -21,12 +21,12 @@ async def ls(prj_id:UUID, full_path:str, user:User=Depends(get_user)):
     return list(await aiofiles.os.scandir(os.path.join(file.path, full_path)))
 
 @router.post("/{full_path:path}", response_model=None)
-async def ls(prj_id:UUID, full_path:str, user:User=Depends(get_user), file:UploadFile=None):
+async def put(prj_id:UUID, full_path:str, user:User=Depends(get_user), file:UploadFile=None):
     prj=await Project.get(id=prj_id).prefetch_related("organization")
     if not await OrganizationMember.exists(organization=prj.organization, user=user):
         raise HTTPException(status_code=400, detail="No permission to do it.")
-    file=await File.get(id=prj.default_storage)
-    await upload(prj, file, filename=file.filename)
+    file_db=await File.get(id=prj.default_storage)
+    await upload(prj, file, filename=full_path)
 
 @router.get("/{full_path:path}", response_class=FileResponse, responses={200: {"content": {"*/*": {"schema": {"type": "string", "format": "binary"}}}}})
 async def get(prj_id:UUID, full_path:str, user:User=Depends(get_user)):

@@ -22,15 +22,20 @@ import {
     HTTPValidationErrorToJSON,
 } from '../models';
 
+export interface FileGetRequest {
+    fullPath: string;
+    prjId: string;
+}
+
 export interface FileLsRequest {
     fullPath: string;
     prjId: string;
-    file?: Blob;
 }
 
-export interface FileLs0Request {
+export interface FilePutRequest {
     fullPath: string;
     prjId: string;
+    file?: Blob;
 }
 
 /**
@@ -39,15 +44,101 @@ export interface FileLs0Request {
 export class FileApi extends runtime.BaseAPI {
 
     /**
+     * Get
+     */
+    async fileGetRaw(requestParameters: FileGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+        if (requestParameters.fullPath === null || requestParameters.fullPath === undefined) {
+            throw new runtime.RequiredError('fullPath','Required parameter requestParameters.fullPath was null or undefined when calling fileGet.');
+        }
+
+        if (requestParameters.prjId === null || requestParameters.prjId === undefined) {
+            throw new runtime.RequiredError('prjId','Required parameter requestParameters.prjId was null or undefined when calling fileGet.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.prjId !== undefined) {
+            queryParameters['prj_id'] = requestParameters.prjId;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/file/{full_path}`.replace(`{${"full_path"}}`, encodeURIComponent(String(requestParameters.fullPath))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.BlobApiResponse(response);
+    }
+
+    /**
+     * Get
+     */
+    async fileGet(requestParameters: FileGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.fileGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Ls
      */
-    async fileLsRaw(requestParameters: FileLsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async fileLsRaw(requestParameters: FileLsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters.fullPath === null || requestParameters.fullPath === undefined) {
             throw new runtime.RequiredError('fullPath','Required parameter requestParameters.fullPath was null or undefined when calling fileLs.');
         }
 
         if (requestParameters.prjId === null || requestParameters.prjId === undefined) {
             throw new runtime.RequiredError('prjId','Required parameter requestParameters.prjId was null or undefined when calling fileLs.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.prjId !== undefined) {
+            queryParameters['prj_id'] = requestParameters.prjId;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/file/{full_path}`.replace(`{${"full_path"}}`, encodeURIComponent(String(requestParameters.fullPath))),
+            method: 'TRACE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Ls
+     */
+    async fileLs(requestParameters: FileLsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+        const response = await this.fileLsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Put
+     */
+    async filePutRaw(requestParameters: FilePutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.fullPath === null || requestParameters.fullPath === undefined) {
+            throw new runtime.RequiredError('fullPath','Required parameter requestParameters.fullPath was null or undefined when calling filePut.');
+        }
+
+        if (requestParameters.prjId === null || requestParameters.prjId === undefined) {
+            throw new runtime.RequiredError('prjId','Required parameter requestParameters.prjId was null or undefined when calling filePut.');
         }
 
         const queryParameters: any = {};
@@ -95,53 +186,10 @@ export class FileApi extends runtime.BaseAPI {
     }
 
     /**
-     * Ls
+     * Put
      */
-    async fileLs(requestParameters: FileLsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.fileLsRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Ls
-     */
-    async fileLs_1Raw(requestParameters: FileLs0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
-        if (requestParameters.fullPath === null || requestParameters.fullPath === undefined) {
-            throw new runtime.RequiredError('fullPath','Required parameter requestParameters.fullPath was null or undefined when calling fileLs_1.');
-        }
-
-        if (requestParameters.prjId === null || requestParameters.prjId === undefined) {
-            throw new runtime.RequiredError('prjId','Required parameter requestParameters.prjId was null or undefined when calling fileLs_1.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.prjId !== undefined) {
-            queryParameters['prj_id'] = requestParameters.prjId;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
-        }
-
-        const response = await this.request({
-            path: `/file/{full_path}`.replace(`{${"full_path"}}`, encodeURIComponent(String(requestParameters.fullPath))),
-            method: 'TRACE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse<any>(response);
-    }
-
-    /**
-     * Ls
-     */
-    async fileLs_1(requestParameters: FileLs0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
-        const response = await this.fileLs_1Raw(requestParameters, initOverrides);
+    async filePut(requestParameters: FilePutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.filePutRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
