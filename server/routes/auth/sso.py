@@ -3,6 +3,8 @@ from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from ...models.db import User as UserDB, Token as TokenDB, TokenType, Organization as OrganizationDB, OrganizationMember, Project as ProjectDB, File
 from ...models.read.user import User
+from ...config import Settings
+settings=Settings()
 
 config = Config('.env')  # read config from .env file
 oauth = OAuth(config)
@@ -39,7 +41,7 @@ async def sso_callback(request: Request, service:str):
         prj=await ProjectDB.create(name=user.name, description=f"{user.name}'s Profile", organization=org)
         user.fullname=user.name
         await user.save()
-        path=os.path.join(config.storage, str(org.id), str(prj.id))
+        path=os.path.join(settings.storage, str(org.id), str(prj.id))
         file=await File.create(is_dir=False, path=path, size=0, project=prj)
         prj.default_storage=file.id
         await prj.save()
