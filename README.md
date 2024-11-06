@@ -1,3 +1,6 @@
-# Marusoftware WebAPI
+# Marron Angry
 
-This is Marusoftware WebAPI made with fastapi.
+This is repository of Marron, that intentionally embedded vulnerabilities.
+
+> [!WARNING]
+> DO NOT USE FOR PRODUCTION!!!!
